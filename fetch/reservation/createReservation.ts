@@ -13,7 +13,7 @@ export interface CreateReservationResponse {
 }
 
 export const createReservation = (
-  body: CreateReservationRequest,
+  payload: CreateReservationRequest,
   created?: (arg: CreateReservationResponse) => void,
   noFreePlace?: () => void,
   notExist?: () => void,

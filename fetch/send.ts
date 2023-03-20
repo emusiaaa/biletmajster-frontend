@@ -6,7 +6,7 @@ export interface ErrorAction {
 export const send = <TRequest, TResponse>(
   url: string,
   type: 'GET' | 'POST' | 'PATCH' | 'DELETE',
-  body: TRequest,
+  payload: TRequest,
   onSuccess?: (response: TResponse) => void,
   onError?: ErrorAction[],
   onNetworkError?: (message: string) => void,
@@ -17,7 +17,7 @@ export const send = <TRequest, TResponse>(
     headers.set('sessionToken', sessionToken);
   fetch(url, {
     method: type,
-    body: type === 'GET' ? undefined : JSON.stringify(body),
+    payload: type === 'GET' ? undefined : JSON.stringify(body),
     headers: headers
   }).then(response => {
     if (response.ok)

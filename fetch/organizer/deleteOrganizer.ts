@@ -1,24 +1,26 @@
 import { Backend } from "fetch/backend";
 import { send } from "fetch/send";
 
-export interface DeleteReservationRequest {
-  reservationToken: string;
+export interface DeleteOrganizerRequest {
+  id: string;
 }
 
-export const deleteReservation = (
-  payload: DeleteReservationRequest,
+export const deleteOrganizer = (
+  payload: DeleteOrganizerRequest,
+  token: string,
   deleted?: () => void,
   notExist?: () => void,
   networkError?: (message: string) => void
 ) => {
   send(
-    Backend(`reservation?reservationToken=${body.reservationToken}`),
+    Backend(`organizer/${payload.id}`),
     "DELETE",
     undefined,
     deleted,
     [
       { code: 404, action: notExist }
     ],
-    networkError
+    networkError,
+    token
   )
 }
