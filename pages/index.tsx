@@ -2,8 +2,13 @@ import Head from 'next/head'
 import Image from 'next/image'
 
 import styles from '@/pages/index.module.css'
+import { useEffect } from 'react'
 
 export default function Home() {
+  useEffect(() => {
+
+  }, []);
+
   return (
     <div className={styles.container}>
       <Head>
