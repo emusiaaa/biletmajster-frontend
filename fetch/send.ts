@@ -7,7 +7,7 @@ export const send = <TRequest, TResponse>(
   url: string,
   type: 'GET' | 'POST' | 'PATCH' | 'DELETE',
   body: TRequest,
-  onSuccess: (response: TResponse) => void,
+  onSuccess?: (response: TResponse) => void,
   onError?: ErrorAction[],
   onNetworkError?: (message: string) => void,
   sessionToken?: string
