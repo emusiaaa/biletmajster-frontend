@@ -20,7 +20,12 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: "18"
+      - name: Install API mocking library
+        run: npm install -g @stoplight/prism-cli
       - name: Install modules
         run: npm install
       - name: Execute unit tests
-        run: npm run test:ci
+        uses: BerniWittmann/background-server-action@v1
+        with:
+          command: npm run test:ci
+          start: prism mock --port 4010 api/API.json
