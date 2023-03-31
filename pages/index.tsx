@@ -14,7 +14,7 @@ export default function Home() {
 
       <main>
           <PageLayout>
-              <h1>hi</h1>
+
           </PageLayout>
 
       </main>
