@@ -5,6 +5,7 @@ import Typography from "@mui/material/Typography";
 import * as React from "react";
 import EventIcon from "@mui/icons-material/Event";
 
+
 export default function Home() {
 
     return (
@@ -74,6 +75,7 @@ export default function Home() {
                     <Grid container alignItems="center" direction="column">
                         <Grid item xs={12}>
                             <Button
+                                href="/login"
                                 variant="contained"
                                 sx={{ color: 'white', display: 'block',
                                     bgcolor:'#73A896', mt:'10px', ":hover":{bgcolor:'#A2ADCD'}}}
@@ -81,6 +83,7 @@ export default function Home() {
                         </Grid>
                         <Grid item xs={12}>
                             <Button
+                                href="/register"
                                 variant="contained"
                                 sx={{color: 'white', display: 'block',
                                     bgcolor:'#73A896', mt:'10px', mb:'20px',":hover":{bgcolor:'#A2ADCD'}}}

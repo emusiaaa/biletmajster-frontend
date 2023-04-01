@@ -13,7 +13,7 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import BookOnlineRoundedIcon from '@mui/icons-material/BookOnlineRounded';
-
+import EventIcon from '@mui/icons-material/Event';
 const pages = ['Add new event', 'My events'];
 const settings = ['Logout'];
 
@@ -40,7 +40,9 @@ function ResponsiveAppBar() {
         <AppBar position="fixed" sx={{bgcolor:'#538D7A'}}>
             <Container maxWidth="xl">
                 <Toolbar disableGutters >
-                    <BookOnlineRoundedIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+                    <Avatar sx={{ bgcolor: '#73A896', mr:1, display: { xs: 'none', md: 'flex' } }}>
+                        <EventIcon />
+                    </Avatar>
                     <Typography
                         variant="h6"
                         noWrap
@@ -95,7 +97,9 @@ function ResponsiveAppBar() {
                             ))}
                         </Menu>
                     </Box>
-                    <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
+                    <Avatar sx={{ bgcolor: '#73A896', mr:1, display: { xs: 'flex', md: 'none' } }}>
+                        <EventIcon />
+                    </Avatar>
                     <Typography
                         variant="h5"
                         noWrap
