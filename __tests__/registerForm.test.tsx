@@ -24,21 +24,17 @@ const setup = () => {
     push: jest.fn(path => { })
   })
 
-  const wrapper = render(
+  render(
     <RegisterForm goToNext={nextStepMock} />
   );
   const nameInput = screen.getByTestId("organizer-name").querySelector('input')!;
   const passwordInput = screen.getByTestId("password").querySelector('input')!;
   const mailInput = screen.getByTestId("email").querySelector('input')!;
   const registerButton = screen.getByTestId("register");
-  return {
-    user, nameInput, passwordInput, mailInput, registerButton, wrapper, nextStepMock
-  }
+  return { user, nameInput, passwordInput, mailInput, registerButton, nextStepMock };
 }
 
-jest.mock('next/router');
-
-describe('RegisterCard', () => {
+describe('RegisterForm', () => {
   it('renders empty registration form', () => {
     const { nameInput, passwordInput, mailInput, registerButton } = setup();
     expect(nameInput).toBeInTheDocument();
@@ -70,10 +66,10 @@ describe('RegisterCard', () => {
 
       expect(apiClient.organizer.signUp).toHaveBeenCalled();
       expect(nextStepMock).toHaveBeenCalled();
-    }, 1000000)
+    })
 
   it('detects incorrect name and password', async () => {
-    const { user, nameInput, passwordInput, mailInput, registerButton, nextStepMock } = setup();
+    const { user, nameInput, passwordInput, mailInput, registerButton } = setup();
 
     await act(async () => {
       await user.type(nameInput, "x");
