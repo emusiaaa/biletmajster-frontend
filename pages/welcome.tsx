@@ -3,7 +3,7 @@ import PageLayout from "@/components/PageLayout";
 import {Button, Grid} from "@mui/material";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
-import BookOnlineRoundedIcon from "@mui/icons-material/BookOnlineRounded";
+import EventIcon from "@mui/icons-material/Event";
 
 export default function Home() {
 
@@ -29,7 +29,7 @@ export default function Home() {
                     <Grid item xs={12}>
                         <Grid container alignItems="center" >
                             <Grid item>
-                                <BookOnlineRoundedIcon sx={{
+                                <EventIcon sx={{
                                     display: { xs: 'flex', md: 'flex' },
                                     fontSize:{xs:'50px', md:'80px'},
                                     color: 'white',
