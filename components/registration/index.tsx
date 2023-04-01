@@ -12,8 +12,15 @@ export const RegisterCard = () => {
     <Card sx={{ p: 2 }}>
       {
         freshId === undefined
-          ? <RegisterForm goToNext={setFreshId}/>
-          : <ConfirmForm goToPrevious={() => setFreshId(undefined)}/>
+          ?
+          <RegisterForm
+            goToNext={setFreshId}
+          />
+          :
+          <ConfirmForm
+            id={freshId}
+            goToPrevious={() => setFreshId(undefined)}
+          />
       }
     </Card>
   )

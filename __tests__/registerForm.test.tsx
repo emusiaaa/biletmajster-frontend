@@ -17,7 +17,6 @@ jest.mock('../api/apiClient', () => ({
 }));
 
 const setup = () => {
-
   const user = userEvent.setup();
   const nextStepMock = jest.fn(id => { });
   (useRouter as any).mockReturnValue({
