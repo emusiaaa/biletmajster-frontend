@@ -31,13 +31,12 @@ const setup = () => {
     const passwordInput = screen.getByTestId("password").querySelector('input')!;
     const mailInput = screen.getByTestId("email").querySelector('input')!;
     const loginButton = screen.getByTestId("login");
-    const error = screen.queryByTestId("error");
-    return { user, passwordInput, mailInput, loginButton, error };
+    return { user, passwordInput, mailInput, loginButton };
 }
 
 describe('LoginForm', () => {
     it('renders empty login form', () => {
-        const { passwordInput, mailInput, loginButton, error } = setup();
+        const { passwordInput, mailInput, loginButton } = setup();
         expect(passwordInput).toBeInTheDocument();
         expect(mailInput).toBeInTheDocument();
         expect(loginButton).toBeInTheDocument();
@@ -54,7 +53,7 @@ describe('LoginForm', () => {
                 })
             })
 
-            const { user, passwordInput, mailInput, loginButton, error } = setup();
+            const { user, passwordInput, mailInput, loginButton } = setup();
 
             await act(async () => {
                 await user.type(mailInput, "johndoe@example.com");
@@ -73,7 +72,7 @@ describe('LoginForm', () => {
             })
         })
 
-        const { user, passwordInput, mailInput, loginButton, error} = setup();
+        const { user, passwordInput, mailInput, loginButton } = setup();
 
         await act(async () => {
             await user.type(mailInput, "johndoe@example.com");
@@ -81,6 +80,6 @@ describe('LoginForm', () => {
             await user.click(loginButton);
         });
 
-        expect(error).not.toBeNull();
+        expect(screen.getByTestId("error")).toBeInTheDocument();
     })
 })

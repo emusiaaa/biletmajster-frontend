@@ -3,6 +3,7 @@ import { useRedirect } from "../../functions/useRedirect"
 import { useEffect, useState } from "react"
 import { ConfirmForm } from "./ConfirmForm"
 import { RegisterForm } from "./RegisterForm"
+import { Banner } from "../Banner"
 
 export const RegisterCard = () => {
   const [freshId, setFreshId] = useState<number | undefined>(undefined);
@@ -11,18 +12,21 @@ export const RegisterCard = () => {
 
   return (
     <Card sx={{ p: 2 }}>
-      {
-        freshId === undefined
-          ?
-          <RegisterForm
-            goToNext={setFreshId}
-          />
-          :
-          <ConfirmForm
-            id={freshId}
-            goToPrevious={() => setFreshId(undefined)}
-          />
-      }
+      <Stack spacing={2}>
+        <Banner />
+        {
+          freshId === undefined
+            ?
+            <RegisterForm
+              goToNext={setFreshId}
+            />
+            :
+            <ConfirmForm
+              id={freshId}
+              goToPrevious={() => setFreshId(undefined)}
+            />
+        }
+      </Stack>
     </Card>
   )
 }

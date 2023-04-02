@@ -5,20 +5,20 @@ import Typography from "@mui/material/Typography";
 import * as React from "react";
 import BookOnlineRoundedIcon from "@mui/icons-material/BookOnlineRounded";
 import SignIn from "@/components/login/loginForm";
+import { RegisterCard } from "@/components/registration";
 
 export default function Home() {
 
     return (
         <>
             <Head>
-                <title>Create Next App</title>
+                <title>BiletMajster - Register</title>
                 <style>
                     {'body { background-color: #538D7A; }'}
                 </style>
             </Head>
 
             <main>
-
                 <Grid container direction="column" alignItems="center"
                       sx={{
                           bgcolor:'#FFFFFF',
@@ -26,8 +26,8 @@ export default function Home() {
                           borderRadius: '30px', mt:3
                       }}
                       justifyContent="center" >
-                    <Grid item>
-                        <SignIn></SignIn>
+                    <Grid item sx={{ width: '60%' }}>
+                        <RegisterCard />
                     </Grid>
                 </Grid>
             </main>

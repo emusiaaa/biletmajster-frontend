@@ -20,6 +20,7 @@ import { apiClient } from '../../api/apiClient';
 import { useRecoilState } from 'recoil';
 import { sessionTokenState } from '../../recoil/sessionTokenState';
 import { useRedirect } from '../../functions/useRedirect';
+import { Banner } from '../Banner';
 
 export default function SignIn() {
     const [error, setError] = useState(false);
@@ -43,6 +44,7 @@ export default function SignIn() {
         const response = await apiClient.organizer.loginOrganizer(input);
         setLoading(false);
         if (response.ok) {
+            setSessionToken(response.data.sessionToken!);
             router.push('/dashboard');
         } else {
             if (response.status === 400)
@@ -65,37 +67,7 @@ export default function SignIn() {
                     }}
                 >
 
-                    <Grid container
-                          direction="row"
-                          alignItems="center"
-                        justifyContent="center"
-                        alignContent="center"
-                          sx={{height:'60px'}}
-                    >
-                        <Grid item >
-                                <img
-                                    src="/favicon.svg"
-                                    alt="BiletMajster"
-                                    style={{
-                                        width: '50px'
-                                    }}
-                                />
-                        </Grid>
-                        <Grid item>
-
-                            <Typography
-                                noWrap
-                                sx={{
-                                    display: { xs: 'flex', md: 'flex' },
-                                    fontSize: { xs: '40px', md: '50px' },
-                                    fontWeight: 600
-                                }}
-                            >
-                                &nbsp;BiletMajster
-                            </Typography>
-                        </Grid>
-
-                    </Grid>
+                    <Banner />
                     <Grid item>
                         <Typography
                             noWrap
