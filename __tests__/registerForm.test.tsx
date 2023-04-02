@@ -3,6 +3,7 @@ import { RegisterForm } from '../components/registration/RegisterForm'
 import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 import { apiClient } from '../api/apiClient';
+import { RecoilRoot } from 'recoil';
 
 jest.mock('next/router', () => ({
   useRouter: jest.fn()
@@ -24,7 +25,9 @@ const setup = () => {
   })
 
   render(
-    <RegisterForm goToNext={nextStepMock} />
+    <RecoilRoot>
+      <RegisterForm goToNext={nextStepMock} />
+    </RecoilRoot>
   );
   const nameInput = screen.getByTestId("organizer-name").querySelector('input')!;
   const passwordInput = screen.getByTestId("password").querySelector('input')!;
