@@ -13,9 +13,12 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import EventIcon from '@mui/icons-material/Event';
+import {useState } from "react";
+
 const theme = createTheme();
 
 export default function SignIn() {
+    const [error, setError] = useState(false);
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
@@ -90,11 +93,18 @@ export default function SignIn() {
                             FOR EVENT CREATORS
                         </Typography>
                     </Grid>
+                    {error ?
+                        <Typography component="h1" color="red" data-testid="error">
+                            Incorrect email or password :(
+                        </Typography> :
+                        <></>
+                        }
                     <Typography component="h1" variant="h5">
                         Log in
                     </Typography>
                     <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
                         <TextField
+                            data-testid="email"
                             margin="normal"
                             required
                             fullWidth
@@ -105,6 +115,7 @@ export default function SignIn() {
                             autoFocus
                         />
                         <TextField
+                            data-testid="password"
                             margin="normal"
                             required
                             fullWidth
@@ -119,6 +130,7 @@ export default function SignIn() {
                             label="Remember me"
                         />
                         <Button
+                            data-testid="login"
                             type="submit"
                             fullWidth
                             variant="contained"
