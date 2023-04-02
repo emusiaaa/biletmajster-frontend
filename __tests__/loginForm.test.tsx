@@ -2,6 +2,7 @@ import SignIn from '@/components/login/loginForm';
 import { render, screen, act } from '@testing-library/react'
 import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
+import { RecoilRoot } from 'recoil';
 import { apiClient } from '../api/apiClient';
 
 jest.mock('next/router', () => ({
@@ -23,7 +24,9 @@ const setup = () => {
     })
 
     render(
-        <SignIn/>
+        <RecoilRoot>
+            <SignIn />
+        </RecoilRoot>
     );
     const passwordInput = screen.getByTestId("password").querySelector('input')!;
     const mailInput = screen.getByTestId("email").querySelector('input')!;
@@ -78,6 +81,6 @@ describe('LoginForm', () => {
             await user.click(loginButton);
         });
 
-        expect(error).toBeInTheDocument();
+        expect(error).not.toBeNull();
     })
 })

@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { sessionTokenState } from "recoil/sessionTokenState";
+import { sessionTokenState } from "../recoil/sessionTokenState";
 
 /**
  * Redirects user if he is logged in (or not). 

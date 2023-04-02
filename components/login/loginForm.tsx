@@ -17,6 +17,9 @@ import {useState,SyntheticEvent } from "react";
 import { useRouter } from 'next/router';
 import { CircularProgress } from '@mui/material';
 import { apiClient } from '../../api/apiClient';
+import { useRecoilState } from 'recoil';
+import { sessionTokenState } from '../../recoil/sessionTokenState';
+import { useRedirect } from '../../functions/useRedirect';
 
 export default function SignIn() {
     const [error, setError] = useState(false);
@@ -25,6 +28,10 @@ export default function SignIn() {
     const [loading, setLoading] = useState(false);
 
     const router = useRouter();
+
+    const [sessionToken, setSessionToken] = useRecoilState(sessionTokenState);
+
+    useRedirect({ ifLoggedIn: '/dashboard' });
 
     const submitFunction = async (e: SyntheticEvent) => {
         e.preventDefault();
@@ -36,8 +43,7 @@ export default function SignIn() {
         const response = await apiClient.organizer.loginOrganizer(input);
         setLoading(false);
         if (response.ok) {
-            //props.goToNext(response.data.id!);
-            router.push('/');
+            router.push('/dashboard');
         } else {
             if (response.status === 400)
             {
