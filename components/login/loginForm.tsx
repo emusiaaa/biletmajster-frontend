@@ -13,19 +13,39 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import EventIcon from '@mui/icons-material/Event';
-import {useState } from "react";
+import {useState,SyntheticEvent } from "react";
+import { useRouter } from 'next/router';
+import { CircularProgress } from '@mui/material';
+import { apiClient } from 'api/apiClient';
 
 const theme = createTheme();
 
 export default function SignIn() {
     const [error, setError] = useState(false);
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        const data = new FormData(event.currentTarget);
-        console.log({
-            email: data.get('email'),
-            password: data.get('password'),
-        });
+    const [password, setPassword] = useState("");
+    const [mail, setMail] = useState("");
+    const [loading, setLoading] = useState(false);
+
+    const router = useRouter();
+
+    const submitFunction = async (e: SyntheticEvent) => {
+        e.preventDefault();
+        const input = {
+            email: mail,
+            password: password
+        };
+        setLoading(true);
+        const response = await apiClient.organizer.loginOrganizer(input);
+        setLoading(false);
+        if (response.ok) {
+            //props.goToNext(response.data.id!);
+            router.push('/');
+        } else {
+            if (response.status === 400)
+                router.push('/testpage');
+            else
+                alert(response.statusText);
+        }
     };
     const theme = createTheme({
         palette: {
@@ -102,7 +122,7 @@ export default function SignIn() {
                     <Typography component="h1" variant="h5">
                         Log in
                     </Typography>
-                    <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+                    <Box component="form" onSubmit={submitFunction} noValidate sx={{ mt: 1 }}>
                         <TextField
                             data-testid="email"
                             margin="normal"
@@ -113,6 +133,8 @@ export default function SignIn() {
                             name="email"
                             autoComplete="email"
                             autoFocus
+                            value={mail}
+                            onChange={e => setMail(e.target.value)}
                         />
                         <TextField
                             data-testid="password"
@@ -124,6 +146,8 @@ export default function SignIn() {
                             type="password"
                             id="password"
                             autoComplete="current-password"
+                            value={password}
+                            onChange={e => setPassword(e.target.value)}
                         />
                         <FormControlLabel
                             control={<Checkbox value="remember" color="primary" />}
@@ -136,7 +160,7 @@ export default function SignIn() {
                             variant="contained"
                             sx={{ mt: 3, mb: 2 }}
                         >
-                            Log In
+                            {loading ? <CircularProgress data-testid="loading"/> : "Log in"}
                         </Button>
                         <Grid container>
 
