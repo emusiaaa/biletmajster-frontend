@@ -21,7 +21,7 @@ import { apiClient } from 'api/apiClient';
 const theme = createTheme();
 
 export default function SignIn() {
-    const [error, setError] = useState(false);
+    const [error, setError] = useState(true);
     const [password, setPassword] = useState("");
     const [mail, setMail] = useState("");
     const [loading, setLoading] = useState(false);
@@ -42,7 +42,9 @@ export default function SignIn() {
             router.push('/');
         } else {
             if (response.status === 400)
-                router.push('/testpage');
+            {
+                setError(false);
+            }
             else
                 alert(response.statusText);
         }
