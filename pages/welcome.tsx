@@ -4,7 +4,7 @@ import {Button, Grid} from "@mui/material";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
 import EventIcon from "@mui/icons-material/Event";
-
+import Logo from '../public/favicon.svg'
 
 export default function Home() {
 
@@ -28,28 +28,27 @@ export default function Home() {
                       }}
                       justifyContent="center" direction="column">
                     <Grid item xs={12}>
-                        <Grid container alignItems="center" >
+                        <Grid container alignItems="center" alignContent="center">
                             <Grid item>
-                                <EventIcon sx={{
-                                    display: { xs: 'flex', md: 'flex' },
-                                    fontSize:{xs:'50px', md:'80px'},
-                                    color: 'white',
-                                    mr:'10px'}} />
+                                <img
+                                    src="/favicon.svg"
+                                    alt="BiletMajster"
+                                    style={{
+                                        width: '80px'
+                                    }}
+                                />
                             </Grid>
                             <Grid item>
                                 <Typography
                                     noWrap
                                     sx={{
                                         display: { xs: 'flex', md: 'flex' },
-                                        fontFamily: 'monospace',
-                                        fontSize: {xs:'50px', md:'80px'},
-                                        fontWeight: 700,
-                                        letterSpacing: '.3rem',
+                                        fontSize: { xs: '50px', md: '72px' },
+                                        fontWeight: 600,
                                         color: 'white',
-                                        textDecoration: 'none',
                                     }}
                                 >
-                                    DIONIZOS
+                                    &nbsp;BiletMajster
                                 </Typography>
                             </Grid>
                         </Grid>

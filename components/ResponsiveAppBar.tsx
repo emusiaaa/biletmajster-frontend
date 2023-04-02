@@ -40,25 +40,23 @@ function ResponsiveAppBar() {
         <AppBar position="fixed" sx={{bgcolor:'#538D7A'}}>
             <Container maxWidth="xl">
                 <Toolbar disableGutters >
-                    <Avatar sx={{ bgcolor: '#73A896', mr:1, display: { xs: 'none', md: 'flex' } }}>
-                        <EventIcon />
-                    </Avatar>
+                    <img
+                        src="/favicon.svg"
+                        alt="BiletMajster"
+                        style={{
+                            width: '40px'
+                        }}
+                    />
                     <Typography
-                        variant="h6"
                         noWrap
-                        component="a"
-                        href="/"
                         sx={{
-                            mr: 2,
-                            display: { xs: 'none', md: 'flex' },
-                            fontFamily: 'monospace',
-                            fontWeight: 700,
-                            letterSpacing: '.3rem',
-                            color: 'inherit',
-                            textDecoration: 'none',
+                            display: { xs: 'flex', md: 'flex' },
+                            fontWeight: 600,
+                            color: 'white',
+                            mr: 4
                         }}
                     >
-                        DIONIZOS
+                        &nbsp;BiletMajster
                     </Typography>
 
                     <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>

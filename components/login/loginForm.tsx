@@ -72,28 +72,30 @@ export default function SignIn() {
                     <Grid container
                           direction="row"
                           alignItems="center"
-                          justifyContent="center"
+                        justifyContent="center"
+                        alignContent="center"
                           sx={{height:'60px'}}
                     >
                         <Grid item >
-                            <Avatar sx={{ bgcolor: '#73A896', mr:2 }}>
-                                <EventIcon />
-                            </Avatar>
+                                <img
+                                    src="/favicon.svg"
+                                    alt="BiletMajster"
+                                    style={{
+                                        width: '50px'
+                                    }}
+                                />
                         </Grid>
                         <Grid item>
+
                             <Typography
                                 noWrap
                                 sx={{
                                     display: { xs: 'flex', md: 'flex' },
-                                    fontFamily: 'monospace',
-                                    fontSize: {xs:'50px', md:'50px'},
-                                    fontWeight: 700,
-                                    letterSpacing: '.3rem',
-                                    color: 'black',
-                                    textDecoration: 'none',
+                                    fontSize: { xs: '40px', md: '50px' },
+                                    fontWeight: 600
                                 }}
                             >
-                                DIONIZOS
+                                &nbsp;BiletMajster
                             </Typography>
                         </Grid>
 
