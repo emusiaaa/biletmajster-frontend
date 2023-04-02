@@ -16,12 +16,10 @@ import EventIcon from '@mui/icons-material/Event';
 import {useState,SyntheticEvent } from "react";
 import { useRouter } from 'next/router';
 import { CircularProgress } from '@mui/material';
-import { apiClient } from 'api/apiClient';
-
-const theme = createTheme();
+import { apiClient } from '../../api/apiClient';
 
 export default function SignIn() {
-    const [error, setError] = useState(true);
+    const [error, setError] = useState(false);
     const [password, setPassword] = useState("");
     const [mail, setMail] = useState("");
     const [loading, setLoading] = useState(false);
@@ -43,21 +41,13 @@ export default function SignIn() {
         } else {
             if (response.status === 400)
             {
-                setError(false);
+                setError(true);
             }
             else
                 alert(response.statusText);
         }
     };
-    const theme = createTheme({
-        palette: {
-            primary: {
-                main: '#CF8BA9'
-            }
-        }
-    });
     return (
-        <ThemeProvider  theme={theme}>
             <Container component="main" maxWidth="xs">
                 <CssBaseline />
                 <Box
@@ -177,7 +167,6 @@ export default function SignIn() {
                     </Box>
                 </Box>
             </Container>
-        </ThemeProvider >
 
     );
 }

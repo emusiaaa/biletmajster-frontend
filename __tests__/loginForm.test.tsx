@@ -11,14 +11,13 @@ jest.mock('next/router', () => ({
 jest.mock('../api/apiClient', () => ({
     apiClient: {
         organizer: {
-            signUp: jest.fn()
+            loginOrganizer: jest.fn()
         }
     }
 }));
 
 const setup = () => {
     const user = userEvent.setup();
-    const nextStepMock = jest.fn(id => { });
     (useRouter as any).mockReturnValue({
         push: jest.fn(path => { })
     })
@@ -29,13 +28,13 @@ const setup = () => {
     const passwordInput = screen.getByTestId("password").querySelector('input')!;
     const mailInput = screen.getByTestId("email").querySelector('input')!;
     const loginButton = screen.getByTestId("login");
-    const error = screen.getByTestId("error");
-    return { user, passwordInput, mailInput, loginButton, nextStepMock, error };
+    const error = screen.queryByTestId("error");
+    return { user, passwordInput, mailInput, loginButton, error };
 }
 
-describe('RegisterForm', () => {
+describe('LoginForm', () => {
     it('renders empty login form', () => {
-        const { passwordInput, mailInput, loginButton, nextStepMock, error } = setup();
+        const { passwordInput, mailInput, loginButton, error } = setup();
         expect(passwordInput).toBeInTheDocument();
         expect(mailInput).toBeInTheDocument();
         expect(loginButton).toBeInTheDocument();
@@ -52,7 +51,7 @@ describe('RegisterForm', () => {
                 })
             })
 
-            const { user, passwordInput, mailInput, loginButton, nextStepMock, error } = setup();
+            const { user, passwordInput, mailInput, loginButton, error } = setup();
 
             await act(async () => {
                 await user.type(mailInput, "johndoe@example.com");
@@ -61,11 +60,17 @@ describe('RegisterForm', () => {
             });
 
             expect(apiClient.organizer.loginOrganizer).toHaveBeenCalled();
-            expect(nextStepMock).toHaveBeenCalled();
         })
 
     it('detects incorrect email and password', async () => {
-        const { user, passwordInput, mailInput, loginButton, nextStepMock, error} = setup();
+        (apiClient.organizer.loginOrganizer as any).mockImplementation((arg0: { email: string, password: string }) => {
+            return Promise.resolve({
+                ok: false,
+                status: 400
+            })
+        })
+
+        const { user, passwordInput, mailInput, loginButton, error} = setup();
 
         await act(async () => {
             await user.type(mailInput, "johndoe@example.com");
