@@ -10,6 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     name: Build and Deploy Job
     steps:
+      - name: Check backend URL
+        run: echo Backend URL is ${{ env.NEXT_PUBLIC_BACKEND_URL }}
       - uses: actions/checkout@v2
         with:
           submodules: true
