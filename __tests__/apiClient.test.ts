@@ -50,11 +50,7 @@ describe('apiClient', () => {
         customFetch: fetch as any
       });
 
-      try {
-        const response = await client.events.cancelEvent("eventId");
-        expect(true).toBeFalsy(); // fail the test
-      } catch (response) {
-        expect((response as HttpResponse<void, void>).status).toBe(401); // Unauthorized
-      }
+      const response = await client.events.cancelEvent("eventId");
+      expect(response.status).toBe(401); // Unauthorized
     })
 })

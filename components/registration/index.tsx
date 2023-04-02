@@ -1,17 +1,10 @@
 import { Card, Stack } from "@mui/material"
-import { createContext, useEffect, useState } from "react"
-import { useRecoilState } from "recoil"
-import { freshIdState } from "../../recoil/registration/freshIdState"
+import { useEffect, useState } from "react"
 import { ConfirmForm } from "./ConfirmForm"
 import { RegisterForm } from "./RegisterForm"
 
 export const RegisterCard = () => {
-  const [freshId, setFreshId] = useRecoilState(freshIdState)
-
-  // on page load, reset the form.
-  useEffect(() => {
-    setFreshId(undefined);
-  }, []);
+  const [freshId, setFreshId] = useState<number | undefined>(undefined);
 
   // TODO: if logged in, redirect to organizer's main page
 
@@ -19,8 +12,15 @@ export const RegisterCard = () => {
     <Card sx={{ p: 2 }}>
       {
         freshId === undefined
-          ? <RegisterForm />
-          : <ConfirmForm />
+          ?
+          <RegisterForm
+            goToNext={setFreshId}
+          />
+          :
+          <ConfirmForm
+            id={freshId}
+            goToPrevious={() => setFreshId(undefined)}
+          />
       }
     </Card>
   )
