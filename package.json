@@ -6,8 +6,7 @@
     "start": "next start",
     "test": "jest --watch",
     "test:ci": "jest --ci",
-    "lint": "next lint",
-    "lint-fix": "next lint --fix"
+    "lint": "eslint . --ext .ts,.tsx,.js,.jsx,.json"
   },
   "dependencies": {
     "@emotion/react": "^11.10.6",
