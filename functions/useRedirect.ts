@@ -24,5 +24,5 @@ export const useRedirect = (arg: { ifLoggedIn?: string, ifNotLoggedIn?: string }
       if (tokenState !== undefined && arg.ifLoggedIn !== undefined)
         router.push(arg.ifLoggedIn);
     }
-  }, [tokenState, router.isReady]);
+  }, [tokenState, router, arg]);
 }

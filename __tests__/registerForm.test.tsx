@@ -2,19 +2,21 @@ import { render, screen, act } from '@testing-library/react'
 import { RegisterForm } from '../components/registration/RegisterForm'
 import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
-import { apiClient } from '../api/apiClient';
+import { useApiClient } from '../api/apiClient';
 import { RecoilRoot } from 'recoil';
 
 jest.mock('next/router', () => ({
   useRouter: jest.fn()
 }))
 
-jest.mock('../api/apiClient', () => ({
-  apiClient: {
-    organizer: {
-      signUp: jest.fn()
-    }
+const apiClient = {
+  organizer: {
+    signUp: jest.fn()
   }
+}
+
+jest.mock('../api/apiClient', () => ({
+  useApiClient: jest.fn(() => apiClient)
 }));
 
 const setup = () => {

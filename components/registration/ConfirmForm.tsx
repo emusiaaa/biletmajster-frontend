@@ -1,5 +1,5 @@
 import { Alert, Button, CircularProgress, Link, Stack, TextField, Typography } from "@mui/material"
-import { apiClient } from "../../api/apiClient";
+import { useApiClient } from "../../api/apiClient";
 import { useRouter } from "next/router";
 import { SyntheticEvent, useState } from "react";
 
@@ -14,12 +14,13 @@ export const ConfirmForm = (props: ConfirmFormProps) => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const router = useRouter();
+  const apiClient = useApiClient();
 
   const submitFunction = async (e: SyntheticEvent) => {
     e.preventDefault();
     setError("");
     setLoading(true);
-    const response = await apiClient.organizer.confirm(props.id.toString(), { code: code });
+    const response = await apiClient.organizer.confirm(props.id.toString(), { headers: { code: code } });
     setLoading(false);
     if (response.ok) {
       setSuccess(true);
