@@ -1,5 +1,13 @@
+import { useRecoilState } from 'recoil';
+import { backendUrlState, urls } from 'recoil/backendUrlState';
 import { Api } from './Api';
 
-export const apiClient = new Api({
-  baseUrl: process.env.NEXT_PUBLIC_BACKEND_URL
-})
+export const useApiClient = () => {
+  const [backend, _] = useRecoilState(backendUrlState);
+
+  console.log("Backend URL is " + backend)
+
+  return new Api({
+    baseUrl: backend
+  });
+}

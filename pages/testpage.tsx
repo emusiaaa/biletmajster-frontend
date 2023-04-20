@@ -1,10 +1,12 @@
 import { BackendSelector } from "@/components/BackendSelector";
 import { RegisterCard } from "@/components/registration";
-import { apiClient } from "api/apiClient";
+import { useApiClient } from "api/apiClient";
 import { useState } from "react";
 
 export default function TestPage() {
   //return <RegisterCard />
+
+  const apiClient = useApiClient();
 
   console.debug("BaseURL is " + apiClient.baseUrl)
 

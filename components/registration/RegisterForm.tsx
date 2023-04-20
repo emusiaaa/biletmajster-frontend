@@ -1,9 +1,10 @@
 import { Button, CircularProgress, Stack, TextField } from "@mui/material"
-import { apiClient } from "../../api/apiClient";
+import { useApiClient } from "../../api/apiClient";
 import { ValidationErrors } from "fluentvalidation-ts/dist/ValidationErrors";
 import { useRouter } from "next/router";
 import { SyntheticEvent, useState } from "react"
 import { RegisterData, RegisterValidator } from "../../validators/RegisterValidator";
+import { BackendSelector } from "../BackendSelector";
 
 export interface RegisterFormProps {
   goToNext: (id: number) => void
@@ -18,6 +19,7 @@ export const RegisterForm = (props: RegisterFormProps) => {
   const [loading, setLoading] = useState(false);
 
   const router = useRouter();
+  const apiClient = useApiClient();
 
   const submitFunction = async (e: SyntheticEvent) => {
     e.preventDefault();
@@ -84,6 +86,8 @@ export const RegisterForm = (props: RegisterFormProps) => {
           value={password}
           onChange={e => setPassword(e.target.value)}
         />
+
+        <BackendSelector />
         <Button
           variant="contained"
           data-testid="register"
