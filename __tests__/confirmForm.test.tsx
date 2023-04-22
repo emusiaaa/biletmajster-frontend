@@ -15,7 +15,7 @@ const apiClient = {
   }
 }
 
-jest.mock('../api/apiClient', () => ({
+jest.mock('../functions/useApiClient', () => ({
   useApiClient: jest.fn(() => apiClient)
 }));
 
