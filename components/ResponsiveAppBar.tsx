@@ -14,13 +14,26 @@ import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import BookOnlineRoundedIcon from '@mui/icons-material/BookOnlineRounded';
 import EventIcon from '@mui/icons-material/Event';
-const pages = ['Add new event', 'My events'];
+import { useRouter } from 'next/router';
+//const pages = ['Add new event', 'My events'];
 const settings = ['Logout'];
-
+interface Page {
+    title: string,
+    url: string
+}
+export const pages: (Page)[] = [
+    {
+        title: "Add new event",
+        url: "/add-new-event"
+    },
+    {
+        title: "My events",
+        url: "/dashboard"
+    }]
 function ResponsiveAppBar() {
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
-
+    const router = useRouter();
     const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorElNav(event.currentTarget);
     };
@@ -89,8 +102,12 @@ function ResponsiveAppBar() {
                             }}
                         >
                             {pages.map((page) => (
-                                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                                    <Typography textAlign="center">{page}</Typography>
+                                <MenuItem key={page.title} onClick={() => {
+                                    if (!(router.route === page.url))
+                                        router.push(page.url);
+                                    handleCloseNavMenu();
+                                }}>
+                                    <Typography textAlign="center">{page.title}</Typography>
                                 </MenuItem>
                             ))}
                         </Menu>
@@ -120,12 +137,16 @@ function ResponsiveAppBar() {
                         {pages.map((page) => (
                             <Button
                                 variant="contained"
-                                key={page}
-                                onClick={handleCloseNavMenu}
+                                key={page.title}
+                                onClick={() => {
+                                    if (!(router.route === page.url))
+                                        router.push(page.url);
+                                    handleCloseNavMenu();
+                                }}
                                 sx={{ my: 2, color: 'white', display: 'block',
                                     bgcolor:'#73A896', mr:'10px', ":hover":{bgcolor:'#A2ADCD'}}}
                             >
-                                {page}
+                                {page.title}
                             </Button>
                         ))}
                     </Box>

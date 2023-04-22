@@ -18,5 +18,5 @@ export const urls = [
 
 export const backendUrlState = atom<string>({
     key: "backendUrlState",
-    default: urls[0].url
+    default: urls[1].url
 })
