@@ -16,7 +16,7 @@ import EventIcon from '@mui/icons-material/Event';
 import { useState, SyntheticEvent } from "react";
 import { useRouter } from 'next/router';
 import { CircularProgress } from '@mui/material';
-import { useApiClient } from '../../api/apiClient';
+import { useApiClient } from '../../functions/useApiClient';
 import { useRecoilState } from 'recoil';
 import { sessionTokenState } from '../../recoil/sessionTokenState';
 import { useRedirect } from '../../functions/useRedirect';

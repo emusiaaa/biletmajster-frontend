@@ -3,7 +3,7 @@ import { atom } from "recoil";
 export const urls = [
     {
         name: "BiletMajster",
-        url: "https://biletmajster.azurewebsites.net"
+        url: "https://biletmajster.azurewebsites.net/api/v3"
     },
     {
         name: "Dionizos",
