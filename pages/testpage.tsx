@@ -1,6 +1,6 @@
 import { BackendSelector } from "@/components/BackendSelector";
 import { RegisterCard } from "@/components/registration";
-import { useApiClient } from "api/apiClient";
+import { useApiClient } from "functions/useApiClient";
 import { useState } from "react";
 
 export default function TestPage() {

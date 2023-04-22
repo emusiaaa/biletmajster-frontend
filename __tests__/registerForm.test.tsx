@@ -2,7 +2,7 @@ import { render, screen, act } from '@testing-library/react'
 import { RegisterForm } from '../components/registration/RegisterForm'
 import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
-import { useApiClient } from '../api/apiClient';
+import { useApiClient } from '../functions/useApiClient';
 import { RecoilRoot } from 'recoil';
 
 jest.mock('next/router', () => ({

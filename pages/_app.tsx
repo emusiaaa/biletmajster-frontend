@@ -1,3 +1,4 @@
+import { CookieManager } from '@/components/CookieManager';
 import '@/styles/global.css'
 import { createTheme, ThemeProvider } from '@mui/material';
 import type { AppProps } from 'next/app'
@@ -14,6 +15,7 @@ const theme = createTheme({
 export default function MyApp({ Component, pageProps }: AppProps) {
   return (
     <RecoilRoot>
+      <CookieManager />
       <ThemeProvider theme={theme}>
         <Component {...pageProps} />
       </ThemeProvider>

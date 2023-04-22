@@ -3,7 +3,7 @@ import { render, screen, act } from '@testing-library/react'
 import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 import { RecoilRoot } from 'recoil';
-import { useApiClient } from '../api/apiClient';
+import { useApiClient } from '../functions/useApiClient';
 
 jest.mock('next/router', () => ({
     useRouter: jest.fn()
