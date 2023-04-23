@@ -52,7 +52,7 @@ describe('Categories', () => {
         (apiClient.categories.getCategories as any).mockImplementation(() => {
                     return Promise.resolve({
                         ok: true,
-                        data: { id: 123, name:"Kategoria" }
+                        data: [{ id: 123, name:"Kategoria" }]
                     })
                 })
         const {titleInput, nameInput, longInput, latInput, maxInput, startTimePicker, endTimePicker,

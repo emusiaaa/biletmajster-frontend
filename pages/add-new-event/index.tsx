@@ -111,7 +111,7 @@ export default function Categories() {
     const getCategories = async () => {
         const response = await apiClient.categories.getCategories();
         if (response.ok) {
-            const categoriesFromResponse: Category[] = response.data.map((category: any) => {
+            const categoriesFromResponse: Category[] = response.data.map((category: Category) => {
                 return {
                     id: category.id,
                     name: category.name,
