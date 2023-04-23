@@ -11,7 +11,9 @@ import {DesktopDatePicker, LocalizationProvider} from "@mui/x-date-pickers";
 import dayjs, {Dayjs} from "dayjs";
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 import { DateTimePicker } from '@mui/x-date-pickers';
-import { Category } from 'api/Api';
+import { Category, EventForm } from 'api/Api';
+import { useRecoilState } from 'recoil';
+import { sessionTokenState } from 'recoil/sessionTokenState';
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
@@ -33,6 +35,12 @@ function getStyles(name: string, personName: readonly string[], theme: Theme) {
     };
 }
 export default function Categories() {
+    const [sessionToken, setSessionToken] = useRecoilState(sessionTokenState);
+    const [title, setTitle] = useState("");
+    const [name, setName] = useState("");
+    const [maxPlaces, setMaxPlaces] = useState<number>(0);
+    const [lat, setLat] = useState<number>(0);
+    const [long, setLong] = useState<number>(0);
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
     const [categories, setCategories] = useState<Category[]|null>(null);
@@ -46,8 +54,14 @@ export default function Categories() {
         dayjs('2014-08-18T21:11:54'),
     );
 
-    const handleChange = (newValue: Dayjs | null) => {
+    const handleChange = (newValue: Dayjs) => {
         setValue(newValue);
+    };
+    const handleChangeBeginDate = (newValue: Dayjs ) => {
+        setBeginDate(newValue);
+    };
+    const handleChangeEndDate = (newValue: Dayjs ) => {
+        setEndDate(newValue);
     };
     const apiClient = useApiClient();
     const theme = useTheme();
@@ -60,13 +74,38 @@ export default function Categories() {
         setCategoryNames(
             typeof value === 'string' ? value.split(',') : value,
         );
-        setSelectedCategories(
-           obj.key.substring(2),
-        );
     };
-    const submin = () =>{
+    const submin = async () =>{
         //tuuuuuuuuuu działa w końcu jprdl
-        console.log(categoryNames.map((e)=>Number(e)));
+        // console.log(title);
+        // console.log(name);
+        // console.log(maxPlaces);
+        // console.log(lat);
+        // console.log(long);
+        // console.log(beginDate);
+        // console.log(endDate);
+        // const epochTime = beginDate!.unix();
+        // console.log(epochTime);
+        // console.log(categoryNames.map((e)=>Number(e)));
+        const newEvent: EventForm = {
+            title: title,
+            name: name,
+            startTime: beginDate!.unix(),
+            endTime: endDate!.unix(),
+            latitude: lat.toString(),
+            longitude: long.toString(),
+            maxPlace: maxPlaces,
+            categoriesIds: categoryNames.map((e)=>Number(e))
+        };
+        console.log(newEvent);
+        if (sessionToken !== undefined) {
+            const response = await apiClient.events.addEvent(newEvent,{ headers: { sessionToken : sessionToken }});
+            if (response.ok) {
+                console.log("juhuu")
+            } else {
+                console.log("nie udalo sie")
+            }
+        } else{ console.log("undefindes")}
     }
     const getCategories = async () => {
         setError("");
@@ -130,29 +169,36 @@ export default function Categories() {
                                     fullWidth
                                     label="Nazwa eventu"
                                     autoFocus
+                                    value={title}
+                                    onChange={(e)=>setTitle(e.target.value)}
                                     sx={{ mb: 2 }}
                                 />
                                 <Grid container spacing={2}>
                                     <Grid item xs={6} >
-
-                                                <TextField
-                                                    required
-                                                    label="Short description of event"
-                                                    fullWidth
-                                                    multiline
-                                                    maxRows={6}
-                                                    minRows={2}
-                                                    sx={{ mb: 2 }}
-                                                />
+                                        <TextField
+                                            required
+                                            label="Short description of event"
+                                            fullWidth
+                                            multiline
+                                            maxRows={6}
+                                            minRows={2}
+                                            value={name}
+                                            onChange={(e)=>setName(e.target.value)}
+                                            sx={{ mb: 2 }}
+                                        />
                                     </Grid>
                                     <Grid item xs={6} >
                                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                                             <DateTimePicker
                                                 label="Event start time"
+                                                value={beginDate}
+                                                onChange={handleChangeBeginDate}
                                                 sx={{width:'100%', mb: 2}}
                                             />
                                             <DateTimePicker
                                                 label="Event end time"
+                                                value={endDate}
+                                                onChange={handleChangeEndDate}
                                                 sx={{width:'100%', mb: 2}}
                                             />
                                         </LocalizationProvider>
@@ -161,6 +207,8 @@ export default function Categories() {
                                             required
                                             type="number"
                                             label="Max places"
+                                            value={maxPlaces}
+                                            onChange={(e)=>setMaxPlaces(+e.target.value)}
                                             sx={{ mb: 2 }}
                                         />
                                         <TextField
@@ -168,6 +216,8 @@ export default function Categories() {
                                             required
                                             type="number"
                                             label="Lat"
+                                            value={lat}
+                                            onChange={(e)=>setLat(+e.target.value)}
                                             sx={{ mb: 2 }}
                                         />
                                         <TextField
@@ -175,6 +225,8 @@ export default function Categories() {
                                             required
                                             type="number"
                                             label="Long"
+                                            value={long}
+                                            onChange={(e)=>setLong(+e.target.value)}
                                             sx={{ mb: 2 }}
                                         />
                                     </Grid>
