@@ -11,7 +11,7 @@
   },
   "servers": [
     {
-      "url": "https://yourbackenhosting.edu.pl"
+      "url": "http://localhost:5079/api/v3"
     }
   ],
   "tags": [
@@ -740,10 +740,6 @@
             "type": "integer",
             "format": "int64",
             "example": 100
-          },
-          "placeSchema": {
-            "type": "string",
-            "example": "Seralized place schema"
           }
         }
       },
