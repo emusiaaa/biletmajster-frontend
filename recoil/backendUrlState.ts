@@ -16,7 +16,7 @@ export const urls = [
     },
     {
         name: "localhost",
-        url: (process.env.NEXT_PUBLIC_BACKEND_URL ?? "") + "/api/v3"
+        url: (process.env.NEXT_PUBLIC_BACKEND_URL ?? "")
         // Warning: 
     }
 ];
