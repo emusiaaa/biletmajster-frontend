@@ -83,7 +83,7 @@ export default function AddCategoryPopUp() {
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose} data-testid="cancel-btn">Cancel</Button>
-                    <Button onClick={addNewCategory} data-testid="add-btn">Add</Button>
+                    <Button onClick={addNewCategory} data-testid="add-category-btn">Add</Button>
                 </DialogActions>
             </Dialog>
         </div>

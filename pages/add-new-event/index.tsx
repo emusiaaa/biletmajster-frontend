@@ -194,7 +194,6 @@ export default function Categories() {
                                             <Grid item xs={6}>
                                                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                                                     <DateTimePicker
-                                                        data-testid="startTime-picker"
                                                         label="Event start time"
                                                         value={beginDate}
                                                         minDate={dayjs()}
@@ -204,7 +203,7 @@ export default function Categories() {
                                                         slotProps={{
                                                             textField: {
                                                                 error: errors.startTime !== undefined,
-                                                                helperText: errors.startTime,
+                                                                helperText: errors.startTime
                                                             },
                                                         }}
                                                     /></LocalizationProvider>

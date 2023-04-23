@@ -3,11 +3,20 @@ import { render, screen, act } from '@testing-library/react'
 import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 import { useApiClient } from '../functions/useApiClient';
-import { RecoilRoot } from 'recoil';
+import { useRecoilState } from 'recoil';
+import { sessionTokenState } from '../recoil/sessionTokenState';
 import AddCategoryPopUp from '@/components/events/AddCategoryPopUp';
 
 jest.mock('next/router', () => ({
     useRouter: jest.fn()
+}))
+
+// we'll have to mock recoil so that it returns a correct value of a sessionToken
+jest.mock('recoil', () => ({
+    useRecoilState: jest.fn()
+}))
+jest.mock('../recoil/sessionTokenState', () => ({
+    sessionTokenState: undefined // nothing, really
 }))
 
 const apiClient = {
@@ -22,16 +31,15 @@ jest.mock('../functions/useApiClient', () => ({
 
 const setup = async () => {
     const user = userEvent.setup();
-    const nextStepMock = jest.fn(id => { });
     (useRouter as any).mockReturnValue({
         push: jest.fn(path => { })
-    })
+    });
+
+    (useRecoilState as any).mockReturnValue(['mySessionToken', () => { }])
 
     render(
-        <RecoilRoot>
-            <AddCategoryPopUp/>
-        </RecoilRoot>
-);
+        <AddCategoryPopUp />
+    );
     const openForm = screen.getByTestId("open-form-btn");
     await act(async () => {
         await user.click(openForm);
@@ -39,34 +47,34 @@ const setup = async () => {
     // const passwordInput = screen.getByTestId("password").querySelector('input')!;
     const categoryInput = screen.getByTestId("category").querySelector('input')!;
     const cancelButton = screen.getByTestId("cancel-btn");
-    const addButton = screen.getByTestId("add-btn");
-    return { user, categoryInput, cancelButton, addButton, nextStepMock };
+    const addButton = screen.getByTestId("add-category-btn");
+    return { user, categoryInput, cancelButton, addButton };
 }
 
 describe('AddCategoryPopUp', () => {
     it('renders empty category form', async () => {
-        const {categoryInput, cancelButton, addButton} = await setup();
+        const { categoryInput, cancelButton, addButton } = await setup();
         expect(categoryInput).toBeInTheDocument();
         expect(cancelButton).toBeInTheDocument();
         expect(addButton).toBeInTheDocument();
     }),
-    // it('continues when correct category provided', async () => {
-    //     (apiClient.categories.addCategories as any).mockImplementation((arg0: { headers: { sessionToken: string }, categoryName: string}) => {
-    //         expect(arg0.categoryName).toBe("Jedzenie");
-    //         return Promise.resolve({
-    //             ok: true,
-    //             data: { id: 123, name:"Jedzenie" }
-    //         })
-    //     })
-    //     const { user, categoryInput, cancelButton, addButton, nextStepMock } = await setup();
-    //
-    //     await act(async () => {
-    //         await user.type(categoryInput, "Jedzenie");
-    //         await user.click(addButton);
-    //     });
-    //     expect(apiClient.categories.addCategories).toHaveBeenCalled();
-    //     expect(nextStepMock).toHaveBeenCalled();
-    // })
+        it('continues when correct category provided', async () => {
+            (apiClient.categories.addCategories as any).mockImplementation((requestParams: { headers: { sessionToken: string, categoryName: string } }) => {
+                expect(requestParams.headers.sessionToken).toBe("mySessionToken");
+                expect(requestParams.headers.categoryName).toBe("Jedzenie");
+                return Promise.resolve({
+                    ok: true,
+                    data: [{ id: 123, name: "Jedzenie" }]
+                })
+            })
+            const { user, categoryInput, cancelButton, addButton } = await setup();
+
+            await act(async () => {
+                await user.type(categoryInput, "Jedzenie");
+                await user.click(addButton);
+            });
+            expect(apiClient.categories.addCategories).toHaveBeenCalled();
+        })
 
     it('detects empty category', async () => {
         const { user, categoryInput, cancelButton, addButton } = await setup();
