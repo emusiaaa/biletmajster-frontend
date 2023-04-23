@@ -11,7 +11,7 @@
   },
   "servers": [
     {
-      "url": "http://localhost:5079/api/v3"
+      "url": "https://yourbackenhosting.edu.pl"
     }
   ],
   "tags": [
