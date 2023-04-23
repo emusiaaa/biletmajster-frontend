@@ -42,18 +42,14 @@ export default function Categories() {
     const [helperText, setHelperText] = useState("");
     const [lat, setLat] = useState<number>(0);
     const [long, setLong] = useState<number>(0);
-
-    const [loading, setLoading] = useState(false);
     const [categories, setCategories] = useState<Category[]|null>(null);
-    const [beginDate, setBeginDate] = useState<Dayjs|null>(
-        null
-    );
-    const [endDate, setEndDate] = useState<Dayjs|null>(
-        null
-    );
-    const [value, setValue] = useState<Dayjs | null>(
-        dayjs('2014-08-18T21:11:54'),
-    );
+    const [beginDate, setBeginDate] = useState<Dayjs|null>(null);
+    const [endDate, setEndDate] = useState<Dayjs|null>(null);
+    const [categoryNames, setCategoryNames] = useState<string[]>([]);
+    const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
+
+    const apiClient = useApiClient();
+    const theme = useTheme();
 
     const handleMaxPlaces = (e: React.ChangeEvent<HTMLInputElement>) => {
         const max= e.target.value;
@@ -66,16 +62,12 @@ export default function Categories() {
             setHelperText("Please put a valid integer number")
         }
     };
-    const handleChangeBeginDate = (newValue: Dayjs ) => {
+    const handleChangeBeginDate = (newValue: Dayjs | null ) => {
         setBeginDate(newValue);
     };
-    const handleChangeEndDate = (newValue: Dayjs ) => {
+    const handleChangeEndDate = (newValue: Dayjs | null) => {
         setEndDate(newValue);
     };
-    const apiClient = useApiClient();
-    const theme = useTheme();
-    const [categoryNames, setCategoryNames] = useState<string[]>([]);
-    const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
     const handleSelector = (event: SelectChangeEvent<typeof categoryNames>, obj : any) => {
         const {
             target: { value },
@@ -95,20 +87,17 @@ export default function Categories() {
             maxPlace: Number(maxPlaces),
             categoriesIds: categoryNames.map((e)=>Number(e))
         };
-        console.log(newEvent);
         if (sessionToken !== undefined) {
             const response = await apiClient.events.addEvent(newEvent,{ headers: { sessionToken : sessionToken }});
             if (response.ok) {
                 console.log(response)
             } else {
-                console.log("nie udalo sie")
+                alert("Received error: "+ response.statusText);
             }
         } else{ console.log("nie masz tokena")}
     }
     const getCategories = async () => {
-        setLoading(true);
         const response = await apiClient.categories.getCategories();
-        setLoading(false);
         if (response.ok) {
             const categoriesFromResponse: Category[] = response.data.map((category: any) => {
                 return {
@@ -118,7 +107,7 @@ export default function Categories() {
             });
             setCategories(categoriesFromResponse);
         } else {
-                alert(response.statusText);
+            alert(response.statusText);
         }
     };
     useEffect(() => {
@@ -127,9 +116,8 @@ export default function Categories() {
     return (
         <>
             <Head>
-                <title>Create Next App</title>
+                <title>Add new event</title>
             </Head>
-
             <main>
                 <PageLayout/>
                 <Grid sx={{marginTop:'60px'}}>
@@ -170,7 +158,7 @@ export default function Categories() {
                                     sx={{ mb: 2 }}
                                 />
                                 <Grid container spacing={2}>
-                                    <Grid item xs={6} >
+                                    <Grid item xs={4} >
                                         <TextField
                                             required
                                             label="Short description of event"
@@ -183,13 +171,14 @@ export default function Categories() {
                                             sx={{ mb: 2 }}
                                         />
                                     </Grid>
-                                    <Grid item xs={6} >
+                                    <Grid item xs={8} >
                                         <Grid container spacing={2}>
                                             <Grid item xs={6}>
                                                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                                                     <DateTimePicker
                                                         label="Event start time"
                                                         value={beginDate}
+                                                        minDate={dayjs()}
                                                         onChange={handleChangeBeginDate}
                                                         sx={{width:'100%', mb: 2}}
                                                     /></LocalizationProvider>
@@ -199,11 +188,11 @@ export default function Categories() {
                                                     <DateTimePicker
                                                         label="Event end time"
                                                         value={endDate}
+                                                        minDate={beginDate ? beginDate : dayjs()}
                                                         onChange={handleChangeEndDate}
                                                         sx={{width:'100%', mb: 2}}
                                                     />
                                                 </LocalizationProvider>
-
                                                 </Grid>
                                         </Grid>
                                         <TextField
@@ -239,8 +228,6 @@ export default function Categories() {
                                                 />
                                             </Grid>
                                         </Grid>
-
-
                                     </Grid>
                                 </Grid>
                                 <Grid container spacing={2}>
@@ -264,7 +251,6 @@ export default function Categories() {
                                                 )}
                                                 MenuProps={MenuProps}
                                             >
-                                                {/*tuuuuuuu*/}
                                                 {categories ? categories.map((category) => (
                                                     <MenuItem
                                                         key={category.id}
@@ -273,7 +259,7 @@ export default function Categories() {
                                                     >
                                                         {category.name}
                                                     </MenuItem>
-                                                )) : <MenuItem>bleee</MenuItem>}
+                                                )) : <MenuItem>wait.....</MenuItem>}
                                             </Select>
                                         </FormControl>
                                     </Grid>
@@ -290,15 +276,11 @@ export default function Categories() {
                                 >
                                    ADD
                                 </Button>
-
                             </Box>
                         </Box>
                     </Container>
-
                 </Grid>
-
             </main>
-
         </>
     )
 }

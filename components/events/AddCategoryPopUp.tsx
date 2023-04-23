@@ -31,7 +31,7 @@ export default function AddCategoryPopUp() {
             if (response.ok) {
                 console.log("juhuu")
             } else {
-                console.log("nie udalo sie")
+                alert("Could not add category. Please refresh page.\n Received error: "+response.statusText);
             }
         }
        else{
