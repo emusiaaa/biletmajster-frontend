@@ -6,9 +6,10 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import { useApiClient } from 'api/apiClient';
+
 import { useRecoilState } from 'recoil';
 import { sessionTokenState } from 'recoil/sessionTokenState';
+import { useApiClient } from 'functions/useApiClient';
 
 export default function AddCategoryPopUp() {
     const [open, setOpen] = React.useState(false);

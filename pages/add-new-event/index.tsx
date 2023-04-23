@@ -2,7 +2,7 @@ import Head from 'next/head'
 import Image from 'next/image'
 import {SyntheticEvent, useEffect, useState } from 'react'
 import PageLayout from "@/components/PageLayout";
-import { useApiClient } from 'api/apiClient';
+
 import AddCategoryPopUp from '@/components/events/AddCategoryPopUp';
 import {Box, Button, Chip, Container, CssBaseline, FormControl,
     FormHelperText, Grid, InputLabel, MenuItem, OutlinedInput, Select,
@@ -17,6 +17,7 @@ import { useRecoilState } from 'recoil';
 import { sessionTokenState } from 'recoil/sessionTokenState';
 import { ValidationErrors } from 'fluentvalidation-ts/dist/ValidationErrors';
 import { EventValidator } from 'validators/EventValidator';
+import { useApiClient } from 'functions/useApiClient';
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
