@@ -15,8 +15,10 @@ import AdbIcon from '@mui/icons-material/Adb';
 import BookOnlineRoundedIcon from '@mui/icons-material/BookOnlineRounded';
 import EventIcon from '@mui/icons-material/Event';
 import { useRouter } from 'next/router';
-//const pages = ['Add new event', 'My events'];
-const settings = ['Logout'];
+import { Person } from '@mui/icons-material';
+import { useSetRecoilState } from 'recoil';
+import { sessionTokenState } from 'recoil/sessionTokenState';
+
 interface Page {
     title: string,
     url: string
@@ -31,6 +33,7 @@ export const pages: (Page)[] = [
         url: "/dashboard"
     }]
 function ResponsiveAppBar() {
+    const setSessionToken = useSetRecoilState(sessionTokenState);
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
     const router = useRouter();
@@ -50,7 +53,7 @@ function ResponsiveAppBar() {
     };
 
     return (
-        <AppBar position="fixed" sx={{bgcolor:'#538D7A'}}>
+        <AppBar position="fixed" sx={{ bgcolor: '#538D7A' }}>
             <Container maxWidth="xl">
                 <Toolbar disableGutters >
                     <img
@@ -83,34 +86,6 @@ function ResponsiveAppBar() {
                         >
                             <MenuIcon />
                         </IconButton>
-                        <Menu
-                            id="menu-appbar"
-                            anchorEl={anchorElNav}
-                            anchorOrigin={{
-                                vertical: 'bottom',
-                                horizontal: 'left',
-                            }}
-                            keepMounted
-                            transformOrigin={{
-                                vertical: 'top',
-                                horizontal: 'left',
-                            }}
-                            open={Boolean(anchorElNav)}
-                            onClose={handleCloseNavMenu}
-                            sx={{
-                                display: { xs: 'block', md: 'none' },
-                            }}
-                        >
-                            {pages.map((page) => (
-                                <MenuItem key={page.title} onClick={() => {
-                                    if (!(router.route === page.url))
-                                        router.push(page.url);
-                                    handleCloseNavMenu();
-                                }}>
-                                    <Typography textAlign="center">{page.title}</Typography>
-                                </MenuItem>
-                            ))}
-                        </Menu>
                     </Box>
 
                     <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
@@ -123,8 +98,10 @@ function ResponsiveAppBar() {
                                         router.push(page.url);
                                     handleCloseNavMenu();
                                 }}
-                                sx={{ my: 2, color: 'white', display: 'block',
-                                    bgcolor:'#73A896', mr:'10px', ":hover":{bgcolor:'#A2ADCD'}}}
+                                sx={{
+                                    my: 2, color: 'white', display: 'block',
+                                    bgcolor: '#73A896', mr: '10px', ":hover": { bgcolor: '#A2ADCD' }
+                                }}
                             >
                                 {page.title}
                             </Button>
@@ -134,7 +111,9 @@ function ResponsiveAppBar() {
                     <Box sx={{ flexGrow: 0 }}>
                         <Tooltip title="Open settings">
                             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                <Avatar sx={{bgcolor:'#A2ADCD'}} alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                                <Avatar>
+                                    <Person />
+                                </Avatar>
                             </IconButton>
                         </Tooltip>
                         <Menu
@@ -153,11 +132,13 @@ function ResponsiveAppBar() {
                             open={Boolean(anchorElUser)}
                             onClose={handleCloseUserMenu}
                         >
-                            {settings.map((setting) => (
-                                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                                    <Typography textAlign="center">{setting}</Typography>
-                                </MenuItem>
-                            ))}
+                            <MenuItem onClick={() => {
+                                setSessionToken(undefined);
+                                router.push('/login');
+                                console.log("clicku")
+                            }}>
+                                <Typography textAlign="center">Logout</Typography>
+                            </MenuItem>
                         </Menu>
                     </Box>
                 </Toolbar>
