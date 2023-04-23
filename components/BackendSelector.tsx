@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useRecoilState } from "recoil";
 
 export const BackendSelector = () => {
-  const [backendOption, setBackendOption] = useState<0 | 1 | 2>(0);
   const [backendUrl, setBackendUrl] = useRecoilState(backendUrlState);
 
   return (
@@ -13,18 +12,17 @@ export const BackendSelector = () => {
       <Select
         labelId="backend-label"
         id="backend"
-        value={backendOption}
+        value={backendUrl}
         label="Backend URL"
         onChange={e => {
           const option = e.target.value as any;
           console.log(option);
-          setBackendOption(option);
-          setBackendUrl(urls[option].url);
+          setBackendUrl(option);
         }}
       >
         {
-          [0, 1, 2].map(value =>
-            <MenuItem key={value} value={value}>{urls[value].name}</MenuItem>)
+          urls.map(url =>
+            <MenuItem key={url.url} value={url.url}>{url.name}</MenuItem>)
         }
       </Select>
     </FormControl>
