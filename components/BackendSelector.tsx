@@ -17,7 +17,7 @@ export const BackendSelector = () => {
         onChange={e => {
           const option = e.target.value as any;
           console.log(option);
-          setBackendUrl(urls[option].url);
+          setBackendUrl(option);
         }}
       >
         {
