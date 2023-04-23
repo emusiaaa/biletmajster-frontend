@@ -8,8 +8,8 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 
 import { useRecoilState } from 'recoil';
-import { sessionTokenState } from 'recoil/sessionTokenState';
-import { useApiClient } from 'functions/useApiClient';
+import { sessionTokenState } from '../../recoil/sessionTokenState';
+import { useApiClient } from '../../functions/useApiClient';
 
 export default function AddCategoryPopUp() {
     const [open, setOpen] = React.useState(false);
@@ -37,6 +37,7 @@ export default function AddCategoryPopUp() {
             const response = await apiClient.categories.addCategories({ headers: { sessionToken : sessionToken,categoryName : category }});
             if (response.ok) {
                 console.log("juhuu");
+                console.log(response.data);
                 handleClose();
             } else {
                 if(response.status === 400){
@@ -48,7 +49,6 @@ export default function AddCategoryPopUp() {
        else{
            setError("nie masz tokena");
         }
-
     }
     return (
         <div>
