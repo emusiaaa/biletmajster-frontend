@@ -131,7 +131,7 @@ export default function SignIn() {
                         type="submit"
                         fullWidth
                         variant="contained"
-                        sx={{ mt: 3, mb: 2 }}
+                        sx={{ mb: 2 }}
                     >
                         {loading ? <CircularProgress data-testid="loading" /> : "Log in"}
                     </Button>
