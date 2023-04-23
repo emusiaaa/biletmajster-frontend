@@ -4,7 +4,8 @@ import {SyntheticEvent, useEffect, useState } from 'react'
 import PageLayout from "@/components/PageLayout";
 import { useApiClient } from 'api/apiClient';
 import AddCategoryPopUp from '@/components/events/AddCategoryPopUp';
-import {Box, Button, Chip, Container, CssBaseline, FormControl, Grid, InputLabel, MenuItem, OutlinedInput, Select,
+import {Box, Button, Chip, Container, CssBaseline, FormControl,
+    FormHelperText, Grid, InputLabel, MenuItem, OutlinedInput, Select,
     SelectChangeEvent, TextField, Theme, Typography, useTheme } from '@mui/material';
 import { createTheme } from '@mui/material'
 import {DesktopDatePicker, LocalizationProvider} from "@mui/x-date-pickers";
@@ -14,6 +15,8 @@ import { DateTimePicker } from '@mui/x-date-pickers';
 import { Category, EventForm } from 'api/Api';
 import { useRecoilState } from 'recoil';
 import { sessionTokenState } from 'recoil/sessionTokenState';
+import { ValidationErrors } from 'fluentvalidation-ts/dist/ValidationErrors';
+import { EventValidator } from 'validators/EventValidator';
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
@@ -47,6 +50,7 @@ export default function Categories() {
     const [endDate, setEndDate] = useState<Dayjs|null>(null);
     const [categoryNames, setCategoryNames] = useState<string[]>([]);
     const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
+    const [errors, setErrors] = useState<ValidationErrors<EventForm>>({});
 
     const apiClient = useApiClient();
     const theme = useTheme();
@@ -77,24 +81,31 @@ export default function Categories() {
         );
     };
     const addEvent = async () =>{
+        setErrors({});
         const newEvent: EventForm = {
             title: title,
             name: name,
-            startTime: beginDate!.unix(),
-            endTime: endDate!.unix(),
+            startTime: beginDate ? beginDate.unix() : 0,
+            endTime: endDate ? endDate.unix() : 0,
             latitude: lat.toString(),
             longitude: long.toString(),
             maxPlace: Number(maxPlaces),
             categoriesIds: categoryNames.map((e)=>Number(e))
         };
-        if (sessionToken !== undefined) {
-            const response = await apiClient.events.addEvent(newEvent,{ headers: { sessionToken : sessionToken }});
-            if (response.ok) {
-                console.log(response)
-            } else {
-                alert("Received error: "+ response.statusText);
-            }
-        } else{ console.log("nie masz tokena")}
+        const validation = new EventValidator().validate(newEvent);
+        if (!Object.values(validation).every(val => val === undefined)) {
+            setErrors(validation);
+            console.log(validation);
+        } else {
+            if (sessionToken !== undefined) {
+                const response = await apiClient.events.addEvent(newEvent,{ headers: { sessionToken : sessionToken }});
+                if (response.ok) {
+                    console.log(response)
+                } else {
+                    alert("Received error: "+ response.statusText);
+                }
+            } else{ console.log("nie masz tokena")}
+        }
     }
     const getCategories = async () => {
         const response = await apiClient.categories.getCategories();
@@ -156,6 +167,8 @@ export default function Categories() {
                                     value={title}
                                     onChange={(e)=>setTitle(e.target.value)}
                                     sx={{ mb: 2 }}
+                                    error={errors.title !== undefined}
+                                    helperText={errors.title}
                                 />
                                 <Grid container spacing={2}>
                                     <Grid item xs={4} >
@@ -169,6 +182,8 @@ export default function Categories() {
                                             value={name}
                                             onChange={(e)=>setName(e.target.value)}
                                             sx={{ mb: 2 }}
+                                            error={errors.name !== undefined}
+                                            helperText={errors.name}
                                         />
                                     </Grid>
                                     <Grid item xs={8} >
@@ -179,8 +194,15 @@ export default function Categories() {
                                                         label="Event start time"
                                                         value={beginDate}
                                                         minDate={dayjs()}
+                                                        disablePast
                                                         onChange={handleChangeBeginDate}
                                                         sx={{width:'100%', mb: 2}}
+                                                        slotProps={{
+                                                            textField: {
+                                                                error: errors.startTime !== undefined,
+                                                                helperText: errors.startTime,
+                                                            },
+                                                        }}
                                                     /></LocalizationProvider>
                                             </Grid>
                                                 <Grid item xs={6}>
@@ -189,8 +211,16 @@ export default function Categories() {
                                                         label="Event end time"
                                                         value={endDate}
                                                         minDate={beginDate ? beginDate : dayjs()}
+                                                        disablePast
                                                         onChange={handleChangeEndDate}
                                                         sx={{width:'100%', mb: 2}}
+                                                        slotProps={{
+                                                            textField: {
+                                                                error: errors.endTime !== undefined,
+                                                                helperText: errors.endTime,
+                                                            },
+                                                        }}
+
                                                     />
                                                 </LocalizationProvider>
                                                 </Grid>
@@ -202,7 +232,8 @@ export default function Categories() {
                                             value={maxPlaces}
                                             onChange={handleMaxPlaces}
                                             sx={{ mb: 2 }}
-                                            helperText={helperText}
+                                            helperText={helperText + errors.maxPlace ? errors.maxPlace : ""}
+                                            error={errors.maxPlace !== undefined}
                                         />
                                         <Grid container spacing={2}>
                                             <Grid item xs={6}>
@@ -214,6 +245,8 @@ export default function Categories() {
                                                     value={lat}
                                                     onChange={(e)=>setLat(+e.target.value)}
                                                     sx={{ mb: 2 }}
+                                                    error={errors.latitude !== undefined}
+                                                    helperText={errors.latitude}
                                                 />
                                             </Grid>
                                             <Grid item xs={6}>
@@ -225,6 +258,8 @@ export default function Categories() {
                                                     value={long}
                                                     onChange={(e)=>setLong(+e.target.value)}
                                                     sx={{ mb: 2 }}
+                                                    error={errors.longitude !== undefined}
+                                                    helperText={errors.longitude}
                                                 />
                                             </Grid>
                                         </Grid>
@@ -250,6 +285,7 @@ export default function Categories() {
                                                     </Box>
                                                 )}
                                                 MenuProps={MenuProps}
+                                                error={errors.categoriesIds !== undefined}
                                             >
                                                 {categories ? categories.map((category) => (
                                                     <MenuItem
@@ -261,6 +297,7 @@ export default function Categories() {
                                                     </MenuItem>
                                                 )) : <MenuItem>wait.....</MenuItem>}
                                             </Select>
+                                            <FormHelperText>{errors.categoriesIds}</FormHelperText>
                                         </FormControl>
                                     </Grid>
                                     <Grid item xs={2}>
