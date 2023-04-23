@@ -6,12 +6,14 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import { useApiClient } from 'api/apiClient';
+
 import { useRecoilState } from 'recoil';
-import { sessionTokenState } from 'recoil/sessionTokenState';
+import { sessionTokenState } from '../../recoil/sessionTokenState';
+import { useApiClient } from '../../functions/useApiClient';
 
 export default function AddCategoryPopUp() {
     const [open, setOpen] = React.useState(false);
+    const [error, setError] = React.useState("");
     const [sessionToken, setSessionToken] = useRecoilState(sessionTokenState);
     const [category, setCategory] = React.useState<string>("");
     const apiClient = useApiClient();
@@ -22,6 +24,11 @@ export default function AddCategoryPopUp() {
         setOpen(false);
     };
     const addNewCategory = async () =>{
+        setError("");
+        if(category === ""){
+            setError("Please type sth.....");
+            return;
+        }
         const input = {
             sessionToken : sessionToken,
             categoryName : category
@@ -29,19 +36,28 @@ export default function AddCategoryPopUp() {
         if (sessionToken !== undefined) {
             const response = await apiClient.categories.addCategories({ headers: { sessionToken : sessionToken,categoryName : category }});
             if (response.ok) {
-                console.log("juhuu")
+                console.log("juhuu");
+                console.log(response.data);
+                handleClose();
             } else {
-                alert("Could not add category. Please refresh page.\n Received error: "+response.statusText);
+                if(response.status === 400){
+                    setError("Category already exist");
+                }
+                else alert("Could not add category. Please refresh page.\n Received error: "+response.statusText);
             }
         }
        else{
-           console.log("nie masz tokena")
+           setError("nie masz tokena");
         }
-       handleClose();
     }
     return (
         <div>
-            <Button variant="outlined" onClick={handleClickOpen} sx={{padding:'3px'}}>
+            <Button
+                variant="outlined"
+                data-testid="open-form-btn"
+                onClick={handleClickOpen}
+                sx={{padding:'3px'}}
+            >
                 ADD CATEGORY
             </Button>
             <Dialog open={open} onClose={handleClose}>
@@ -56,15 +72,18 @@ export default function AddCategoryPopUp() {
                         id="name"
                         label="New category"
                         type="text"
+                        data-testid="category"
                         fullWidth
                         variant="standard"
                         value={category}
                         onChange={(e)=>setCategory(e.target.value)}
+                        error={error !== ""}
+                        helperText={error}
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleClose}>Cancel</Button>
-                    <Button onClick={addNewCategory}>Add</Button>
+                    <Button onClick={handleClose} data-testid="cancel-btn">Cancel</Button>
+                    <Button onClick={addNewCategory} data-testid="add-category-btn">Add</Button>
                 </DialogActions>
             </Dialog>
         </div>

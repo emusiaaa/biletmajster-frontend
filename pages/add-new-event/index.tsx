@@ -2,7 +2,7 @@ import Head from 'next/head'
 import Image from 'next/image'
 import {SyntheticEvent, useEffect, useState } from 'react'
 import PageLayout from "@/components/PageLayout";
-import { useApiClient } from 'api/apiClient';
+
 import AddCategoryPopUp from '@/components/events/AddCategoryPopUp';
 import {Box, Button, Chip, Container, CssBaseline, FormControl,
     FormHelperText, Grid, InputLabel, MenuItem, OutlinedInput, Select,
@@ -14,9 +14,10 @@ import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 import { DateTimePicker } from '@mui/x-date-pickers';
 import { Category, EventForm } from 'api/Api';
 import { useRecoilState } from 'recoil';
-import { sessionTokenState } from 'recoil/sessionTokenState';
+import { sessionTokenState } from '../../recoil/sessionTokenState';
 import { ValidationErrors } from 'fluentvalidation-ts/dist/ValidationErrors';
-import { EventValidator } from 'validators/EventValidator';
+import { EventValidator } from '../../validators/EventValidator';
+import { useApiClient } from '../../functions/useApiClient';
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
@@ -110,7 +111,7 @@ export default function Categories() {
     const getCategories = async () => {
         const response = await apiClient.categories.getCategories();
         if (response.ok) {
-            const categoriesFromResponse: Category[] = response.data.map((category: any) => {
+            const categoriesFromResponse: Category[] = response.data.map((category: Category) => {
                 return {
                     id: category.id,
                     name: category.name,
@@ -160,6 +161,7 @@ export default function Categories() {
                             </Typography>
                             <Box  >
                                 <TextField
+                                    data-testid="title-input"
                                     required
                                     fullWidth
                                     label="Nazwa eventu"
@@ -173,6 +175,7 @@ export default function Categories() {
                                 <Grid container spacing={2}>
                                     <Grid item xs={4} >
                                         <TextField
+                                            data-testid="name-input"
                                             required
                                             label="Short description of event"
                                             fullWidth
@@ -200,7 +203,7 @@ export default function Categories() {
                                                         slotProps={{
                                                             textField: {
                                                                 error: errors.startTime !== undefined,
-                                                                helperText: errors.startTime,
+                                                                helperText: errors.startTime
                                                             },
                                                         }}
                                                     /></LocalizationProvider>
@@ -208,6 +211,7 @@ export default function Categories() {
                                                 <Grid item xs={6}>
                                                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                                                     <DateTimePicker
+                                                        data-testid="endTime-picker"
                                                         label="Event end time"
                                                         value={endDate}
                                                         minDate={beginDate ? beginDate : dayjs()}
@@ -226,6 +230,7 @@ export default function Categories() {
                                                 </Grid>
                                         </Grid>
                                         <TextField
+                                            data-testid="max-input"
                                             fullWidth
                                             required
                                             label="Max places"
@@ -238,6 +243,7 @@ export default function Categories() {
                                         <Grid container spacing={2}>
                                             <Grid item xs={6}>
                                                 <TextField
+                                                    data-testid="lat-input"
                                                     fullWidth
                                                     required
                                                     type="number"
@@ -251,6 +257,7 @@ export default function Categories() {
                                             </Grid>
                                             <Grid item xs={6}>
                                                 <TextField
+                                                    data-testid="long-input"
                                                     fullWidth
                                                     required
                                                     type="number"
@@ -270,6 +277,7 @@ export default function Categories() {
                                         <FormControl sx={{width: '100%', mb:2 }}>
                                             <InputLabel id="categories">Category</InputLabel>
                                             <Select
+                                                data-testid="select"
                                                 labelId="categories"
                                                 id="demo-multiple-chip"
                                                 multiple
@@ -305,7 +313,7 @@ export default function Categories() {
                                     </Grid>
                                 </Grid>
                                 <Button
-                                    data-testid="login"
+                                    data-testid="add-btn"
                                     type="submit"
                                     fullWidth
                                     variant="contained"
