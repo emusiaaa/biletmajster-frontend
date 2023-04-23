@@ -41,8 +41,8 @@ export default function AddCategoryPopUp() {
     }
     return (
         <div>
-            <Button variant="outlined" onClick={handleClickOpen}>
-                Open form dialog
+            <Button variant="outlined" onClick={handleClickOpen} sx={{padding:'3px'}}>
+                ADD CATEGORY
             </Button>
             <Dialog open={open} onClose={handleClose}>
                 <DialogTitle>Add new event category</DialogTitle>

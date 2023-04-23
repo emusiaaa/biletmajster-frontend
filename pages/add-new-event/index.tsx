@@ -38,10 +38,11 @@ export default function Categories() {
     const [sessionToken, setSessionToken] = useRecoilState(sessionTokenState);
     const [title, setTitle] = useState("");
     const [name, setName] = useState("");
-    const [maxPlaces, setMaxPlaces] = useState<number>(0);
+    const [maxPlaces, setMaxPlaces] = useState<string>("");
+    const [helperText, setHelperText] = useState("");
     const [lat, setLat] = useState<number>(0);
     const [long, setLong] = useState<number>(0);
-    const [error, setError] = useState("");
+
     const [loading, setLoading] = useState(false);
     const [categories, setCategories] = useState<Category[]|null>(null);
     const [beginDate, setBeginDate] = useState<Dayjs|null>(
@@ -54,8 +55,16 @@ export default function Categories() {
         dayjs('2014-08-18T21:11:54'),
     );
 
-    const handleChange = (newValue: Dayjs) => {
-        setValue(newValue);
+    const handleMaxPlaces = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const max= e.target.value;
+        const regex = /^[1-9]\d*$/;
+        if (max === "" || regex.test(max)) {
+            setMaxPlaces(max);
+            setHelperText("");
+        }
+        else{
+            setHelperText("Please put a valid integer number")
+        }
     };
     const handleChangeBeginDate = (newValue: Dayjs ) => {
         setBeginDate(newValue);
@@ -75,18 +84,7 @@ export default function Categories() {
             typeof value === 'string' ? value.split(',') : value,
         );
     };
-    const submin = async () =>{
-        //tuuuuuuuuuu działa w końcu jprdl
-        // console.log(title);
-        // console.log(name);
-        // console.log(maxPlaces);
-        // console.log(lat);
-        // console.log(long);
-        // console.log(beginDate);
-        // console.log(endDate);
-        // const epochTime = beginDate!.unix();
-        // console.log(epochTime);
-        // console.log(categoryNames.map((e)=>Number(e)));
+    const addEvent = async () =>{
         const newEvent: EventForm = {
             title: title,
             name: name,
@@ -94,21 +92,20 @@ export default function Categories() {
             endTime: endDate!.unix(),
             latitude: lat.toString(),
             longitude: long.toString(),
-            maxPlace: maxPlaces,
+            maxPlace: Number(maxPlaces),
             categoriesIds: categoryNames.map((e)=>Number(e))
         };
         console.log(newEvent);
         if (sessionToken !== undefined) {
             const response = await apiClient.events.addEvent(newEvent,{ headers: { sessionToken : sessionToken }});
             if (response.ok) {
-                console.log("juhuu")
+                console.log(response)
             } else {
                 console.log("nie udalo sie")
             }
-        } else{ console.log("undefindes")}
+        } else{ console.log("nie masz tokena")}
     }
     const getCategories = async () => {
-        setError("");
         setLoading(true);
         const response = await apiClient.categories.getCategories();
         setLoading(false);
@@ -121,9 +118,6 @@ export default function Categories() {
             });
             setCategories(categoriesFromResponse);
         } else {
-            if (response.status === 400)
-                setError("Invalid verification code.")
-            else
                 alert(response.statusText);
         }
     };
@@ -138,7 +132,7 @@ export default function Categories() {
 
             <main>
                 <PageLayout/>
-                <Grid sx={{marginTop:'70px'}}>
+                <Grid sx={{marginTop:'60px'}}>
                     <Container component="main" >
                         <CssBaseline />
                         <Box
@@ -147,7 +141,9 @@ export default function Categories() {
                                 display: 'flex',
                                 flexDirection: 'column',
                                 alignItems: 'center',
-                                backgroundColor: 'lightblue'
+                                padding: '10px',
+                                border: '2px solid #A2ADCD',
+                                borderRadius: '10px',
                             }}
                         >
                             <Typography
@@ -155,7 +151,7 @@ export default function Categories() {
                                 sx={{
                                     display: { xs: 'flex', md: 'flex' },
                                     fontFamily: 'monospace',
-                                    fontSize: '30px',
+                                    fontSize: '25px',
                                     fontWeight: 700,
                                     letterSpacing: '.2rem',
                                     color: 'black',
@@ -180,96 +176,117 @@ export default function Categories() {
                                             label="Short description of event"
                                             fullWidth
                                             multiline
-                                            maxRows={6}
-                                            minRows={2}
+                                            maxRows={7}
+                                            minRows={7}
                                             value={name}
                                             onChange={(e)=>setName(e.target.value)}
                                             sx={{ mb: 2 }}
                                         />
                                     </Grid>
                                     <Grid item xs={6} >
-                                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                            <DateTimePicker
-                                                label="Event start time"
-                                                value={beginDate}
-                                                onChange={handleChangeBeginDate}
-                                                sx={{width:'100%', mb: 2}}
-                                            />
-                                            <DateTimePicker
-                                                label="Event end time"
-                                                value={endDate}
-                                                onChange={handleChangeEndDate}
-                                                sx={{width:'100%', mb: 2}}
-                                            />
-                                        </LocalizationProvider>
+                                        <Grid container spacing={2}>
+                                            <Grid item xs={6}>
+                                                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                                    <DateTimePicker
+                                                        label="Event start time"
+                                                        value={beginDate}
+                                                        onChange={handleChangeBeginDate}
+                                                        sx={{width:'100%', mb: 2}}
+                                                    /></LocalizationProvider>
+                                            </Grid>
+                                                <Grid item xs={6}>
+                                                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                                    <DateTimePicker
+                                                        label="Event end time"
+                                                        value={endDate}
+                                                        onChange={handleChangeEndDate}
+                                                        sx={{width:'100%', mb: 2}}
+                                                    />
+                                                </LocalizationProvider>
+
+                                                </Grid>
+                                        </Grid>
                                         <TextField
                                             fullWidth
                                             required
-                                            type="number"
                                             label="Max places"
                                             value={maxPlaces}
-                                            onChange={(e)=>setMaxPlaces(+e.target.value)}
+                                            onChange={handleMaxPlaces}
                                             sx={{ mb: 2 }}
+                                            helperText={helperText}
                                         />
-                                        <TextField
-                                            fullWidth
-                                            required
-                                            type="number"
-                                            label="Lat"
-                                            value={lat}
-                                            onChange={(e)=>setLat(+e.target.value)}
-                                            sx={{ mb: 2 }}
-                                        />
-                                        <TextField
-                                            fullWidth
-                                            required
-                                            type="number"
-                                            label="Long"
-                                            value={long}
-                                            onChange={(e)=>setLong(+e.target.value)}
-                                            sx={{ mb: 2 }}
-                                        />
+                                        <Grid container spacing={2}>
+                                            <Grid item xs={6}>
+                                                <TextField
+                                                    fullWidth
+                                                    required
+                                                    type="number"
+                                                    label="Lat"
+                                                    value={lat}
+                                                    onChange={(e)=>setLat(+e.target.value)}
+                                                    sx={{ mb: 2 }}
+                                                />
+                                            </Grid>
+                                            <Grid item xs={6}>
+                                                <TextField
+                                                    fullWidth
+                                                    required
+                                                    type="number"
+                                                    label="Long"
+                                                    value={long}
+                                                    onChange={(e)=>setLong(+e.target.value)}
+                                                    sx={{ mb: 2 }}
+                                                />
+                                            </Grid>
+                                        </Grid>
+
+
                                     </Grid>
                                 </Grid>
-                                <FormControl sx={{width: '100%' }}>
-                                <InputLabel id="categories">Category</InputLabel>
-                                <Select
-                                    labelId="categories"
-                                    id="demo-multiple-chip"
-                                    multiple
-                                    fullWidth
-                                    value={categoryNames}
-                                    onChange={handleSelector}
-                                    input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
-                                    renderValue={(selected) => (
-                                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                                            {selected.map((value) => (
-                                                <Chip key={value} label={value} />
-                                            ))}
-                                        </Box>
-                                    )}
-                                    MenuProps={MenuProps}
-                                >
-                                    {/*tuuuuuuu*/}
-                                    {categories ? categories.map((category) => (
-                                        <MenuItem
-                                            key={category.id}
-                                            value={category.id}
-                                            style={getStyles(category.name, categoryNames, theme)}
-                                        >
-                                            {category.name}
-                                        </MenuItem>
-                                    )) : <MenuItem>bleee</MenuItem>}
-                                </Select>
-                                </FormControl>
-
+                                <Grid container spacing={2}>
+                                    <Grid item xs={10}>
+                                        <FormControl sx={{width: '100%', mb:2 }}>
+                                            <InputLabel id="categories">Category</InputLabel>
+                                            <Select
+                                                labelId="categories"
+                                                id="demo-multiple-chip"
+                                                multiple
+                                                fullWidth
+                                                value={categoryNames}
+                                                onChange={handleSelector}
+                                                input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
+                                                renderValue={(selected) => (
+                                                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                                                        {selected.map((value) => (
+                                                            <Chip key={value} label={value} />
+                                                        ))}
+                                                    </Box>
+                                                )}
+                                                MenuProps={MenuProps}
+                                            >
+                                                {/*tuuuuuuu*/}
+                                                {categories ? categories.map((category) => (
+                                                    <MenuItem
+                                                        key={category.id}
+                                                        value={category.id}
+                                                        style={getStyles(category.name, categoryNames, theme)}
+                                                    >
+                                                        {category.name}
+                                                    </MenuItem>
+                                                )) : <MenuItem>bleee</MenuItem>}
+                                            </Select>
+                                        </FormControl>
+                                    </Grid>
+                                    <Grid item xs={2}>
+                                        <AddCategoryPopUp/>
+                                    </Grid>
+                                </Grid>
                                 <Button
                                     data-testid="login"
                                     type="submit"
                                     fullWidth
                                     variant="contained"
-                                    sx={{ mb: 2 }}
-                                    onClick={submin}
+                                    onClick={addEvent}
                                 >
                                    ADD
                                 </Button>
@@ -277,7 +294,7 @@ export default function Categories() {
                             </Box>
                         </Box>
                     </Container>
-                    <AddCategoryPopUp/>
+
                 </Grid>
 
             </main>
