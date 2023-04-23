@@ -17,7 +17,7 @@ import EventIcon from '@mui/icons-material/Event';
 import { useRouter } from 'next/router';
 import { Person } from '@mui/icons-material';
 import { useSetRecoilState } from 'recoil';
-import { sessionTokenState } from 'recoil/sessionTokenState';
+import { sessionTokenState } from '../recoil/sessionTokenState';
 
 interface Page {
     title: string,
