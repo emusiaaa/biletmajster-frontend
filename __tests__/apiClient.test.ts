@@ -23,9 +23,10 @@ describe('apiClient', () => {
       });
 
       const response = await client.organizer.loginOrganizer({
-        email: "test",
-        password: "test"
-      });
+        headers: {
+          email: "test",
+          password: "test"
+        }});
       expect(response.ok).toBeTruthy();
       expect(response.data).toBeDefined();
       expect(response.data.sessionToken).not.toHaveLength(0);

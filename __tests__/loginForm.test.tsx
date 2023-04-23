@@ -3,18 +3,20 @@ import { render, screen, act } from '@testing-library/react'
 import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 import { RecoilRoot } from 'recoil';
-import { apiClient } from '../api/apiClient';
+import { useApiClient } from '../functions/useApiClient';
 
 jest.mock('next/router', () => ({
     useRouter: jest.fn()
 }))
 
-jest.mock('../api/apiClient', () => ({
-    apiClient: {
-        organizer: {
-            loginOrganizer: jest.fn()
-        }
+const apiClient = {
+    organizer: {
+        loginOrganizer: jest.fn()
     }
+}
+
+jest.mock('../functions/useApiClient', () => ({
+    useApiClient: jest.fn(() => apiClient)
 }));
 
 const setup = () => {
@@ -43,9 +45,9 @@ describe('LoginForm', () => {
     }),
 
         it('continues when correct e-mail address and password is provided', async () => {
-            (apiClient.organizer.loginOrganizer as any).mockImplementation((arg0: {email: string, password: string }) => {
-                expect(arg0.email).toBe("johndoe@example.com");
-                expect(arg0.password).toBe("SampleLongPassword");
+            (apiClient.organizer.loginOrganizer as any).mockImplementation((params: { headers: { email: string, password: string } }) => {
+                expect(params.headers.email).toBe("johndoe@example.com");
+                expect(params.headers.password).toBe("SampleLongPassword");
 
                 return Promise.resolve({
                     ok: true,

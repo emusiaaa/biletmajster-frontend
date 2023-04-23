@@ -2,18 +2,21 @@ import { render, screen, act } from '@testing-library/react'
 import { ConfirmForm } from '../components/registration/ConfirmForm'
 import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
-import { apiClient } from '../api/apiClient';
+import { useApiClient } from '../functions/useApiClient';
+import { RecoilRoot } from 'recoil';
 
 jest.mock('next/router', () => ({
   useRouter: jest.fn()
 }))
 
-jest.mock('../api/apiClient', () => ({
-  apiClient: {
-    organizer: {
-      confirm: jest.fn()
-    }
+const apiClient = {
+  organizer: {
+    confirm: jest.fn()
   }
+}
+
+jest.mock('../functions/useApiClient', () => ({
+  useApiClient: jest.fn(() => apiClient)
 }));
 
 const setup = () => {
@@ -25,10 +28,12 @@ const setup = () => {
   const prevStepMock = jest.fn();
 
   render(
-    <ConfirmForm
-      id={100}
-      goToPrevious={prevStepMock}
-    />
+    <RecoilRoot>
+      <ConfirmForm
+        id={100}
+        goToPrevious={prevStepMock}
+      />
+    </RecoilRoot>
   );
   const codeInput = screen.getByTestId("verify-code").querySelector('input')!;
   const confirmButton = screen.getByTestId("confirm");
@@ -54,9 +59,9 @@ describe('ConfirmForm', () => {
     }),
 
     it('shows message if code is correct', async () => {
-      (apiClient.organizer.confirm as any).mockImplementation((id: string, body: { code: string }) => {
+      (apiClient.organizer.confirm as any).mockImplementation((id: string, params: { headers: { code: string } }) => {
         expect(id).toBe("100");
-        expect(body.code).toBe("123456");
+        expect(params.headers.code).toBe("123456");
         return Promise.resolve({
           ok: true
         })
