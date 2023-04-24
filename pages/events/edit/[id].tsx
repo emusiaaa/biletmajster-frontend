@@ -1,23 +1,24 @@
 import Head from 'next/head'
-import Image from 'next/image'
-import {SyntheticEvent, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import PageLayout from "@/components/PageLayout";
-
 import AddCategoryPopUp from '@/components/events/AddCategoryPopUp';
-import {Box, Button, Chip, Container, CssBaseline, FormControl,
+import {
+    Box, Button, Chip, Container, CssBaseline, FormControl,
     FormHelperText, Grid, InputLabel, MenuItem, OutlinedInput, Select,
-    SelectChangeEvent, TextField, Theme, Typography, useTheme } from '@mui/material';
-import { createTheme } from '@mui/material'
-import {DesktopDatePicker, LocalizationProvider} from "@mui/x-date-pickers";
-import dayjs, {Dayjs} from "dayjs";
-import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
+    SelectChangeEvent, TextField, Theme, Typography, useTheme
+} from '@mui/material';
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import dayjs, { Dayjs } from "dayjs";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DateTimePicker } from '@mui/x-date-pickers';
-import { Category, EventForm } from 'api/Api';
+import { Category, Event, EventForm, EventPatch } from 'api/Api';
 import { useRecoilState } from 'recoil';
-import { sessionTokenState } from '../../recoil/sessionTokenState';
+import { sessionTokenState } from '../../../recoil/sessionTokenState';
 import { ValidationErrors } from 'fluentvalidation-ts/dist/ValidationErrors';
-import { EventValidator } from '../../validators/EventValidator';
-import { useApiClient } from '../../functions/useApiClient';
+import { EventValidator } from '../../../validators/EventValidator';
+import { useApiClient } from '../../../functions/useApiClient';
+import { useRouter } from 'next/router';
+
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
@@ -40,40 +41,36 @@ function getStyles(name: string, personName: readonly string[], theme: Theme) {
 }
 export default function Categories() {
     const [sessionToken, setSessionToken] = useRecoilState(sessionTokenState);
+    const [editedEvent, setEditedEvent] = useState<Event | undefined>(undefined);
     const [title, setTitle] = useState("");
     const [name, setName] = useState("");
     const [maxPlaces, setMaxPlaces] = useState<string>("");
     const [helperText, setHelperText] = useState("");
     const [lat, setLat] = useState<number>(0);
     const [long, setLong] = useState<number>(0);
-    const [categories, setCategories] = useState<Category[]|null>(null);
-    const [beginDate, setBeginDate] = useState<Dayjs|null>(null);
-    const [endDate, setEndDate] = useState<Dayjs|null>(null);
+    const [categories, setCategories] = useState<Category[] | null>(null);
+    const [beginDate, setBeginDate] = useState<Dayjs | null>(null);
+    const [endDate, setEndDate] = useState<Dayjs | null>(null);
     const [categoryNames, setCategoryNames] = useState<string[]>([]);
     const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
     const [errors, setErrors] = useState<ValidationErrors<EventForm>>({});
 
     const apiClient = useApiClient();
     const theme = useTheme();
+    const router = useRouter();
 
     const handleMaxPlaces = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const max= e.target.value;
+        const max = e.target.value;
         const regex = /^[1-9]\d*$/;
         if (max === "" || regex.test(max)) {
             setMaxPlaces(max);
             setHelperText("");
         }
-        else{
+        else {
             setHelperText("Please put a valid integer number")
         }
     };
-    const handleChangeBeginDate = (newValue: Dayjs | null ) => {
-        setBeginDate(newValue);
-    };
-    const handleChangeEndDate = (newValue: Dayjs | null) => {
-        setEndDate(newValue);
-    };
-    const handleSelector = (event: SelectChangeEvent<typeof categoryNames>, obj : any) => {
+    const handleSelector = (event: SelectChangeEvent<typeof categoryNames>, obj: any) => {
         const {
             target: { value },
         } = event;
@@ -81,9 +78,12 @@ export default function Categories() {
             typeof value === 'string' ? value.split(',') : value,
         );
     };
-    const addEvent = async () =>{
+    const editEvent = async () => {
+        if (editedEvent === undefined)
+            return;
+
         setErrors({});
-        const newEvent: EventForm = {
+        const patch: EventPatch = {
             title: title,
             name: name,
             startTime: beginDate ? beginDate.unix() : 0,
@@ -94,19 +94,20 @@ export default function Categories() {
             categoriesIds: categoryNames.map((e) => Number(e)),
             placeSchema: "empty"
         };
-        const validation = new EventValidator().validate(newEvent);
+        const validation = new EventValidator().validate(patch as EventForm);
         if (!Object.values(validation).every(val => val === undefined)) {
             setErrors(validation);
             console.log(validation);
         } else {
             if (sessionToken !== undefined) {
-                const response = await apiClient.events.addEvent(newEvent,{ headers: { sessionToken : sessionToken }});
+                const response = await apiClient.events.patchEvent(editedEvent.id.toString(), patch, { headers: { sessionToken: sessionToken } });
                 if (response.ok) {
-                    console.log(response)
+                    alert("Event modified!")
+                    router.push("/dashboard")
                 } else {
-                    alert("Received error: "+ response.statusText);
+                    alert("Received error: " + response.statusText);
                 }
-            } else{ console.log("nie masz tokena")}
+            } else { alert("No token!") }
         }
     }
     const getCategories = async () => {
@@ -123,17 +124,46 @@ export default function Categories() {
             alert(response.statusText);
         }
     };
+    const getEvent = async (id: number) => {
+        const response = await apiClient.events.getEventById(id)
+        if (response.ok) {
+            const event = response.data as Event;
+            setEditedEvent(event);
+            setTitle(event.title);
+            setName(event.name);
+            setMaxPlaces(event.maxPlace.toString());
+            setBeginDate(dayjs.unix(event.startTime));
+            setEndDate(dayjs.unix(event.endTime));
+            setLat(Number(event.latitude));
+            setLong(Number(event.longitude));
+            setCategoryNames(event.categories.map(c => c.name));
+        } else {
+            if (response.status === 404) {
+                alert("This event does not exist.")
+                router.push("/dashboard");
+            }
+            alert(response.statusText);
+        }
+    };
     useEffect(() => {
         getCategories();
     }, []);
+    useEffect(() => {
+        if (router.isReady) {
+            const { id } = router.query;
+            if (id !== undefined) {
+                getEvent(Number(id as string));
+            }
+        }
+    }, [router]);
     return (
         <>
             <Head>
-                <title>Add new event</title>
+                <title>Edit event</title>
             </Head>
             <main>
-                <PageLayout/>
-                <Grid sx={{marginTop:'60px'}}>
+                <PageLayout />
+                <Grid sx={{ marginTop: '60px' }}>
                     <Container component="main" >
                         <CssBaseline />
                         <Box
@@ -158,7 +188,7 @@ export default function Categories() {
                                     color: 'black',
                                 }}
                             >
-                                ADD NEW EVENT
+                                MODIFY EVENT
                             </Typography>
                             <Box  >
                                 <TextField
@@ -168,7 +198,7 @@ export default function Categories() {
                                     label="Nazwa eventu"
                                     autoFocus
                                     value={title}
-                                    onChange={(e)=>setTitle(e.target.value)}
+                                    onChange={(e) => setTitle(e.target.value)}
                                     sx={{ mb: 2 }}
                                     error={errors.title !== undefined}
                                     helperText={errors.title}
@@ -184,7 +214,7 @@ export default function Categories() {
                                             maxRows={7}
                                             minRows={7}
                                             value={name}
-                                            onChange={(e)=>setName(e.target.value)}
+                                            onChange={(e) => setName(e.target.value)}
                                             sx={{ mb: 2 }}
                                             error={errors.name !== undefined}
                                             helperText={errors.name}
@@ -199,8 +229,8 @@ export default function Categories() {
                                                         value={beginDate}
                                                         minDate={dayjs()}
                                                         disablePast
-                                                        onChange={handleChangeBeginDate}
-                                                        sx={{width:'100%', mb: 2}}
+                                                        onChange={newDate => setBeginDate(newDate)}
+                                                        sx={{ width: '100%', mb: 2 }}
                                                         slotProps={{
                                                             textField: {
                                                                 error: errors.startTime !== undefined,
@@ -209,16 +239,16 @@ export default function Categories() {
                                                         }}
                                                     /></LocalizationProvider>
                                             </Grid>
-                                                <Grid item xs={6}>
-                                                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                            <Grid item xs={6}>
+                                                <LocalizationProvider dateAdapter={AdapterDayjs}>
                                                     <DateTimePicker
                                                         data-testid="endTime-picker"
                                                         label="Event end time"
                                                         value={endDate}
                                                         minDate={beginDate ? beginDate : dayjs()}
                                                         disablePast
-                                                        onChange={handleChangeEndDate}
-                                                        sx={{width:'100%', mb: 2}}
+                                                        onChange={newDate => setEndDate(newDate)}
+                                                        sx={{ width: '100%', mb: 2 }}
                                                         slotProps={{
                                                             textField: {
                                                                 error: errors.endTime !== undefined,
@@ -228,7 +258,7 @@ export default function Categories() {
 
                                                     />
                                                 </LocalizationProvider>
-                                                </Grid>
+                                            </Grid>
                                         </Grid>
                                         <TextField
                                             data-testid="max-input"
@@ -250,7 +280,7 @@ export default function Categories() {
                                                     type="number"
                                                     label="Lat"
                                                     value={lat}
-                                                    onChange={(e)=>setLat(+e.target.value)}
+                                                    onChange={(e) => setLat(+e.target.value)}
                                                     sx={{ mb: 2 }}
                                                     error={errors.latitude !== undefined}
                                                     helperText={errors.latitude}
@@ -264,10 +294,7 @@ export default function Categories() {
                                                     type="number"
                                                     label="Long"
                                                     value={long}
-                                                    onChange={(e)=>setLong(+e.target.value)}
-                                                    sx={{ mb: 2 }}
-                                                    error={errors.longitude !== undefined}
-                                                    helperText={errors.longitude}
+                                                    onChange={(e) => setLong(+e.target.value)}
                                                 />
                                             </Grid>
                                         </Grid>
@@ -275,7 +302,7 @@ export default function Categories() {
                                 </Grid>
                                 <Grid container spacing={2}>
                                     <Grid item xs={10}>
-                                        <FormControl sx={{width: '100%', mb:2 }}>
+                                        <FormControl sx={{ width: '100%', mb: 2 }}>
                                             <InputLabel id="categories">Category</InputLabel>
                                             <Select
                                                 data-testid="select"
@@ -310,7 +337,7 @@ export default function Categories() {
                                         </FormControl>
                                     </Grid>
                                     <Grid item xs={2}>
-                                        <AddCategoryPopUp/>
+                                        <AddCategoryPopUp />
                                     </Grid>
                                 </Grid>
                                 <Button
@@ -318,9 +345,9 @@ export default function Categories() {
                                     type="submit"
                                     fullWidth
                                     variant="contained"
-                                    onClick={addEvent}
+                                    onClick={editEvent}
                                 >
-                                   ADD
+                                    MODIFY
                                 </Button>
                             </Box>
                         </Box>
