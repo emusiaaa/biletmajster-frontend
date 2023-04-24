@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import PageLayout from "@/components/PageLayout";
 import AddCategoryPopUp from '@/components/events/AddCategoryPopUp';
 import {
-    Box, Button, Chip, Container, CssBaseline, FormControl,
+    Box, Button, Chip, CircularProgress, Container, CssBaseline, FormControl,
     FormHelperText, Grid, InputLabel, MenuItem, OutlinedInput, Select,
     SelectChangeEvent, TextField, Theme, Typography, useTheme
 } from '@mui/material';
@@ -18,6 +18,8 @@ import { ValidationErrors } from 'fluentvalidation-ts/dist/ValidationErrors';
 import { EventValidator } from '../../../validators/EventValidator';
 import { useApiClient } from '../../../functions/useApiClient';
 import { useRouter } from 'next/router';
+import { Map } from '@/components/Map';
+import { firstLoadState } from 'recoil/firstLoadState';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -40,6 +42,7 @@ function getStyles(name: string, personName: readonly string[], theme: Theme) {
     };
 }
 export default function Categories() {
+    const [loaded, _] = useRecoilState(firstLoadState);
     const [sessionToken, setSessionToken] = useRecoilState(sessionTokenState);
     const [editedEvent, setEditedEvent] = useState<Event | undefined>(undefined);
     const [title, setTitle] = useState("");
@@ -146,8 +149,9 @@ export default function Categories() {
         }
     };
     useEffect(() => {
-        getCategories();
-    }, []);
+        if (loaded)
+            getCategories();
+    }, [loaded]);
     useEffect(() => {
         if (router.isReady) {
             const { id } = router.query;
@@ -211,8 +215,8 @@ export default function Categories() {
                                             label="Short description of event"
                                             fullWidth
                                             multiline
-                                            maxRows={7}
-                                            minRows={7}
+                                            maxRows={10.4}
+                                            minRows={10.4}
                                             value={name}
                                             onChange={(e) => setName(e.target.value)}
                                             sx={{ mb: 2 }}
@@ -222,55 +226,74 @@ export default function Categories() {
                                     </Grid>
                                     <Grid item xs={8} >
                                         <Grid container spacing={2}>
-                                            <Grid item xs={6}>
-                                                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                                    <DateTimePicker
-                                                        label="Event start time"
-                                                        value={beginDate}
-                                                        minDate={dayjs()}
-                                                        disablePast
-                                                        onChange={newDate => setBeginDate(newDate)}
-                                                        sx={{ width: '100%', mb: 2 }}
-                                                        slotProps={{
-                                                            textField: {
-                                                                error: errors.startTime !== undefined,
-                                                                helperText: errors.startTime
-                                                            },
-                                                        }}
-                                                    /></LocalizationProvider>
+                                            <Grid item container spacing={0} xs={6}>
+                                                <Grid item xs={12}>
+                                                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                                        <DateTimePicker
+                                                            label="Event start time"
+                                                            value={beginDate}
+                                                            minDate={dayjs()}
+                                                            disablePast
+                                                            onChange={newDate => setBeginDate(newDate)}
+                                                            sx={{ width: '100%', mb: 2 }}
+                                                            slotProps={{
+                                                                textField: {
+                                                                    error: errors.startTime !== undefined,
+                                                                    helperText: errors.startTime
+                                                                },
+                                                            }}
+                                                        /></LocalizationProvider>
+                                                </Grid>
+                                                <Grid item xs={12}>
+                                                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                                        <DateTimePicker
+                                                            data-testid="endTime-picker"
+                                                            label="Event end time"
+                                                            value={endDate}
+                                                            minDate={beginDate ? beginDate : dayjs()}
+                                                            disablePast
+                                                            onChange={newDate => setEndDate(newDate)}
+                                                            sx={{ width: '100%', mb: 2 }}
+                                                            slotProps={{
+                                                                textField: {
+                                                                    error: errors.endTime !== undefined,
+                                                                    helperText: errors.endTime,
+                                                                },
+                                                            }}
+
+                                                        />
+                                                    </LocalizationProvider>
+                                                </Grid>
+                                                <Grid item xs={12}>
+                                                    <TextField
+                                                        data-testid="max-input"
+                                                        fullWidth
+                                                        required
+                                                        label="Max places"
+                                                        value={maxPlaces}
+                                                        onChange={handleMaxPlaces}
+                                                        sx={{ mb: 2 }}
+                                                        helperText={helperText + errors.maxPlace ? errors.maxPlace : ""}
+                                                        error={errors.maxPlace !== undefined}
+                                                    />
+                                                    </Grid>
                                             </Grid>
                                             <Grid item xs={6}>
-                                                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                                    <DateTimePicker
-                                                        data-testid="endTime-picker"
-                                                        label="Event end time"
-                                                        value={endDate}
-                                                        minDate={beginDate ? beginDate : dayjs()}
-                                                        disablePast
-                                                        onChange={newDate => setEndDate(newDate)}
-                                                        sx={{ width: '100%', mb: 2 }}
-                                                        slotProps={{
-                                                            textField: {
-                                                                error: errors.endTime !== undefined,
-                                                                helperText: errors.endTime,
-                                                            },
-                                                        }}
+                                                {
+                                                    editedEvent === undefined ? <CircularProgress /> :
 
-                                                    />
-                                                </LocalizationProvider>
+                                                        <Map
+                                                            bluePin={[Number(editedEvent.latitude), Number(editedEvent.longitude)]}
+                                                            orangePin={[lat, long]}
+                                                            style={{ height: "calc(100% - 16px)", width: "100%" }}
+                                                            onClick={pos => {
+                                                                setLat(pos[0]);
+                                                                setLong(pos[1]);
+                                                            }}
+                                                        />
+                                                }
                                             </Grid>
                                         </Grid>
-                                        <TextField
-                                            data-testid="max-input"
-                                            fullWidth
-                                            required
-                                            label="Max places"
-                                            value={maxPlaces}
-                                            onChange={handleMaxPlaces}
-                                            sx={{ mb: 2 }}
-                                            helperText={helperText + errors.maxPlace ? errors.maxPlace : ""}
-                                            error={errors.maxPlace !== undefined}
-                                        />
                                         <Grid container spacing={2}>
                                             <Grid item xs={6}>
                                                 <TextField
