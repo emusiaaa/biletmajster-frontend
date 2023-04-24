@@ -26,7 +26,7 @@ interface Page {
 export const pages: (Page)[] = [
     {
         title: "Add new event",
-        url: "/add-new-event"
+        url: "/events/add"
     },
     {
         title: "My events",
