@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 import { useApiClient } from '../functions/useApiClient';
 import { RecoilRoot } from 'recoil';
-import Categories from '@/pages/add-new-event/index';
+import Categories from '@/pages/events/add';
 
 jest.mock('next/router', () => ({
     useRouter: jest.fn()
