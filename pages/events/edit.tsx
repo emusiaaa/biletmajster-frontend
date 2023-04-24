@@ -13,10 +13,10 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DateTimePicker } from '@mui/x-date-pickers';
 import { Category, Event, EventForm, EventPatch } from 'api/Api';
 import { useRecoilState } from 'recoil';
-import { sessionTokenState } from '../../../recoil/sessionTokenState';
+import { sessionTokenState } from '../../recoil/sessionTokenState'
 import { ValidationErrors } from 'fluentvalidation-ts/dist/ValidationErrors';
-import { EventValidator } from '../../../validators/EventValidator';
-import { useApiClient } from '../../../functions/useApiClient';
+import { EventValidator } from '../../validators/EventValidator'
+import { useApiClient } from '../../functions/useApiClient'
 import { useRouter } from 'next/router';
 import { Map } from '@/components/Map';
 import { firstLoadState } from 'recoil/firstLoadState';
