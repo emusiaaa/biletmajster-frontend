@@ -19,7 +19,7 @@ import { ValidationErrors } from 'fluentvalidation-ts/dist/ValidationErrors';
 import { EventValidator } from '../../validators/EventValidator';
 import { useApiClient } from '../../functions/useApiClient';
 import { Map } from '@/components/Map';
-import { firstLoadState } from 'recoil/firstLoadState';
+import { firstLoadState } from '../../recoil/firstLoadState';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
