@@ -337,7 +337,7 @@ export default function Categories() {
                                     variant="contained"
                                     onClick={addEvent}
                                 >
-                                   ADD
+                                    ADD
                                 </Button>
                             </Box>
                         </Box>
