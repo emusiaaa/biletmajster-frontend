@@ -1,5 +1,5 @@
 import PageLayout from '@/components/PageLayout'
-import {Grid, Typography } from '@mui/material'
+import {Grid, Typography, CircularProgress  } from '@mui/material'
 import Head from 'next/head'
 import { useEffect, useState } from 'react';
 import { useRecoilState } from 'recoil';
@@ -17,7 +17,7 @@ const sample: Event[] = [
         "latitude": "52.22216",
         "longitude": "21.00698",
         "name": "To wydarzenie własnie trwa",
-        "status": EventStatus.Pending,
+        "status": EventStatus.InFuture,
         "categories": [
             {
                 "id": 1,
@@ -39,7 +39,7 @@ const sample: Event[] = [
         "latitude": "52.22216",
         "longitude": "21.00698",
         "name": "To wydarzenie własnie trwa To wydarzenie własnie trwaTo wydarzenie własnie trwaTo wydarzenie własnie trwaTo wydarzenie własnie trwaTo wydarzenie własnie trwaTo wydarzenie własnie trwaTo wydarzenie własnie trwaTo wydarzenie własnie trwaTo wydarzenie własnie trwaTo wydarzenie własnie trwaTo wydarzenie własnie trwa",
-        "status": "pending",
+        "status": EventStatus.Done,
         "categories": [
             {
                 "id": 1,
@@ -64,7 +64,6 @@ export default function myEvents() {
     const getMyEvents = async () => {
         console.log("im getting my events");
         if (sessionToken !== undefined) {
-            setLoading(false);
             console.log("token ok")
             const response = await apiClient.events.getMyEvents({ headers: { sessionToken: sessionToken } });
             if (response.ok) {
@@ -85,6 +84,7 @@ export default function myEvents() {
                     };
                 });
                 setMyEvents(eventsFromResponse);
+                setLoading(false);
                 console.log(eventsFromResponse);
             } else {
                 alert(response.statusText);
@@ -102,14 +102,17 @@ export default function myEvents() {
             </Head>
             <main>
                 <PageLayout/>
-                <Grid sx={{marginTop:'60px', mb:3}}>
+                <Grid sx={{marginTop:'70px', mb:3}}>
                     {/*{loading? <h1>loading... </h1> : myEvents === undefined ? <h1>ups</h1> : myEvents.map((event)=><h1>{event.title}</h1>)}*/}
-                    {loading? <h1>loading... </h1> : myEvents === undefined ? <h1>ups</h1> : myEvents.map((event)=>
+                    {loading? <CircularProgress sx={{mt:3}}/> : myEvents === undefined ? <h1>error</h1> : myEvents.map((event)=>
                         <>
                             <EventCard event={event}/>
 
                         </>
                     )}
+                    {/*{sample.map((event)=>*/}
+                    {/*    <EventCard event={event}/>*/}
+                    {/*)}*/}
                 </Grid>
             </main>
         </>
