@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { useRecoilState } from 'recoil';
 import { useApiClient } from '../../functions/useApiClient'
 import { sessionTokenState } from '../../recoil/sessionTokenState'
-import { Event} from 'api/Api';
+import { Event, EventStatus} from 'api/Api';
 import { EventCard } from '@/components/events/EventCard';
 
 const sample: Event[] = [
@@ -17,7 +17,7 @@ const sample: Event[] = [
         "latitude": "52.22216",
         "longitude": "21.00698",
         "name": "To wydarzenie własnie trwa",
-        "status": "pending",
+        "status": EventStatus.Pending,
         "categories": [
             {
                 "id": 1,
@@ -33,12 +33,12 @@ const sample: Event[] = [
     },
     {
         "id": 2,
-        "title": "Urodzinki",
+        "title": "Urodzinkii",
         "startTime": 1682930711,
         "endTime": 1684140311,
         "latitude": "52.22216",
         "longitude": "21.00698",
-        "name": "To wydarzenie własnie trwa",
+        "name": "To wydarzenie własnie trwa To wydarzenie własnie trwaTo wydarzenie własnie trwaTo wydarzenie własnie trwaTo wydarzenie własnie trwaTo wydarzenie własnie trwaTo wydarzenie własnie trwaTo wydarzenie własnie trwaTo wydarzenie własnie trwaTo wydarzenie własnie trwaTo wydarzenie własnie trwaTo wydarzenie własnie trwa",
         "status": "pending",
         "categories": [
             {
@@ -50,8 +50,8 @@ const sample: Event[] = [
                 "name": "Science"
             }
         ],
-        "freePlace": 10,
-        "maxPlace": 10
+        "freePlace": 13,
+        "maxPlace": 56
     }
 ];
 
@@ -92,7 +92,7 @@ export default function myEvents() {
         }
     }
     useEffect(() => {
-        //getMyEvents();
+        getMyEvents();
     }, []);
 
     return (
@@ -102,9 +102,9 @@ export default function myEvents() {
             </Head>
             <main>
                 <PageLayout/>
-                <Grid sx={{marginTop:'60px'}}>
+                <Grid sx={{marginTop:'60px', mb:3}}>
                     {/*{loading? <h1>loading... </h1> : myEvents === undefined ? <h1>ups</h1> : myEvents.map((event)=><h1>{event.title}</h1>)}*/}
-                    { sample.map((event)=>
+                    {loading? <h1>loading... </h1> : myEvents === undefined ? <h1>ups</h1> : myEvents.map((event)=>
                         <>
                             <EventCard event={event}/>
 
