@@ -89,7 +89,7 @@ export default function MyEvents() {
                 <Grid sx={{marginTop:'70px', mb:3}}>
                     {loading? <CircularProgress sx={{mt:3}}/> : myEvents === undefined ? <h1>error</h1> :
                         myEvents.map((event)=>
-                            <EventCard event={event}/>
+                            <EventCard event={event} key={event.id}/>
                     )}
                     {/*{sample.map((event)=>*/}
                     {/*    <EventCard event={event}/>*/}
