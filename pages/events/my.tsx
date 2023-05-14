@@ -55,7 +55,7 @@ const sample: Event[] = [
     }
 ];
 
-export default function myEvents() {
+export default function MyEvents() {
     const [sessionToken, setSessionToken] = useRecoilState(sessionTokenState);
     const [myEvents, setMyEvents] = useState<Event[]>();
     const [loading, setLoading] = useState(true);

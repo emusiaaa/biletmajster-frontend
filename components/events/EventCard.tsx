@@ -154,12 +154,12 @@ export const EventCard = (props: EventProps) => {
                 />
                 <Grid container>
 
-                    <Grid item xs={8}>
+                    <Grid item xs={6}>
                         <Box>
                             <Grid container spacing={1}>
                                 {props.event.categories.map((cat) =>
-                                    <Grid item>
-                                        <Chip label={cat.name} data-testid="event-category"></Chip>
+                                    <Grid item key={cat.id}>
+                                        <Chip label={cat.name}></Chip>
                                     </Grid>
                                 )}
                             </Grid>
@@ -170,15 +170,13 @@ export const EventCard = (props: EventProps) => {
 
 
                     </Grid>
-                    <Grid item xs={4}>
+                    <Grid item xs={6}>
                         <>
-                            {/*<Typography variant="h6" align='right' sx={{mr:3}} >*/}
-                            {/*    {props.event.status}*/}
-                            {/*</Typography>*/}
-                            {/*<Chip style={{backgroundColor:'red'}} icon={<CheckCircleOutlineIcon style={{ color: 'black' }}/>} label={props.event.status} />*/}
-                            <Box sx={{backgroundColor: 'primary.dark', height: "150px", width:"230px", mt:1}}>
-                                MAPA
-                            </Box>
+                            <Map
+                                style={{ width: 240, height: 150, borderColor: "black", borderWidth: 1 }}
+                                elevation={0}
+                                bluePin={[Number(props.event.latitude), Number(props.event.longitude)]}
+                            />
                         </>
 
                     </Grid>
