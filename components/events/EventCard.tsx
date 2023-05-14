@@ -159,7 +159,7 @@ export const EventCard = (props: EventProps) => {
                             <Grid container spacing={1}>
                                 {props.event.categories.map((cat) =>
                                     <Grid item key={cat.id}>
-                                        <Chip label={cat.name}></Chip>
+                                        <Chip label={cat.name} data-testid="event-category"></Chip>
                                     </Grid>
                                 )}
                             </Grid>
