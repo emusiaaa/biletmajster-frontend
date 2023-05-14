@@ -1,13 +1,16 @@
-import { Button, CircularProgress, Stack, TextField } from "@mui/material"
+import { Button, CircularProgress, Stack, TextField } from "@mui/material";
 import { useApiClient } from "../../functions/useApiClient";
 import { ValidationErrors } from "fluentvalidation-ts/dist/ValidationErrors";
 import { useRouter } from "next/router";
-import { SyntheticEvent, useState } from "react"
-import { RegisterData, RegisterValidator } from "../../validators/RegisterValidator";
+import { SyntheticEvent, useState } from "react";
+import {
+  RegisterData,
+  RegisterValidator,
+} from "../../validators/RegisterValidator";
 import { BackendSelector } from "../BackendSelector";
 
 export interface RegisterFormProps {
-  goToNext: (id: number) => void
+  goToNext: (id: number) => void;
 }
 
 export const RegisterForm = (props: RegisterFormProps) => {
@@ -27,10 +30,10 @@ export const RegisterForm = (props: RegisterFormProps) => {
     const input = {
       name: name,
       email: mail,
-      password: password
+      password: password,
     };
     const validation = new RegisterValidator().validate(input);
-    if (!Object.values(validation).every(val => val === undefined)) {
+    if (!Object.values(validation).every((val) => val === undefined)) {
       setErrors(validation);
     } else {
       // already exists - redirect
@@ -40,20 +43,15 @@ export const RegisterForm = (props: RegisterFormProps) => {
       if (response.ok) {
         props.goToNext(response.data.id!);
       } else {
-        if (response.status === 400)
-          router.push('/login');
-        else
-          alert(response.statusText);
+        if (response.status === 400) router.push("/login");
+        else alert(response.statusText);
       }
     }
   };
 
   return (
-    <form
-      onSubmit={submitFunction}>
-      <Stack
-        spacing={2}
-      >
+    <form onSubmit={submitFunction}>
+      <Stack spacing={2}>
         <TextField
           label="Organizer name"
           required
@@ -62,7 +60,7 @@ export const RegisterForm = (props: RegisterFormProps) => {
           error={errors.name !== undefined}
           helperText={errors.name}
           value={name}
-          onChange={e => setName(e.target.value)}
+          onChange={(e) => setName(e.target.value)}
         />
         <TextField
           label="E-mail"
@@ -73,7 +71,7 @@ export const RegisterForm = (props: RegisterFormProps) => {
           error={errors.email !== undefined}
           helperText={errors.email}
           value={mail}
-          onChange={e => setMail(e.target.value)}
+          onChange={(e) => setMail(e.target.value)}
         />
         <TextField
           label="Password"
@@ -84,7 +82,7 @@ export const RegisterForm = (props: RegisterFormProps) => {
           error={errors.password !== undefined}
           helperText={errors.password}
           value={password}
-          onChange={e => setPassword(e.target.value)}
+          onChange={(e) => setPassword(e.target.value)}
         />
 
         <BackendSelector />
@@ -94,9 +92,9 @@ export const RegisterForm = (props: RegisterFormProps) => {
           disabled={loading}
           type="submit"
         >
-          {loading ? <CircularProgress data-testid="loading"/> : "Register"}
+          {loading ? <CircularProgress data-testid="loading" /> : "Register"}
         </Button>
       </Stack>
     </form>
-  )
-}
+  );
+};

@@ -1,11 +1,10 @@
-import Head from 'next/head'
-import Image from 'next/image'
+import Head from "next/head";
+import Image from "next/image";
 
-import { useEffect } from 'react'
+import { useEffect } from "react";
 import PageLayout from "@/components/PageLayout";
 
 export default function Home() {
-
   return (
     <>
       <Head>
@@ -13,12 +12,8 @@ export default function Home() {
       </Head>
 
       <main>
-          <PageLayout>
-
-          </PageLayout>
-
+        <PageLayout></PageLayout>
       </main>
-
     </>
-  )
+  );
 }

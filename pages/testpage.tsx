@@ -15,18 +15,26 @@ export default function TestPage() {
     <>
       <h1>Map component test?</h1>
       <Map
-        style={{ width: 600, height:500, borderColor: "black", borderWidth: 1 }}
+        style={{
+          width: 600,
+          height: 500,
+          borderColor: "black",
+          borderWidth: 1,
+        }}
         elevation={0}
         bluePin={pos}
         orangePin={newPos}
-        onClick={p => setNewPos(p)}
+        onClick={(p) => setNewPos(p)}
       />
       <Button
         disabled={newPos === pos}
-        onClick={() => { setPos(newPos); setNewPos(undefined); }}
+        onClick={() => {
+          setPos(newPos);
+          setNewPos(undefined);
+        }}
       >
         Set new location
       </Button>
     </>
-  )
+  );
 }
