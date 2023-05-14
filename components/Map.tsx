@@ -15,7 +15,7 @@ export interface MapProps {
   onClick?: (arg: Pos) => void,
   style?: CSSProperties,
   elevation?: number
-};
+}
 
 export const Map = (props: MapProps) => {
   return (

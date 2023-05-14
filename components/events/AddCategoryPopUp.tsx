@@ -32,7 +32,7 @@ export default function AddCategoryPopUp() {
         const input = {
             sessionToken : sessionToken,
             categoryName : category
-        };
+        }
         if (sessionToken !== undefined) {
             const response = await apiClient.categories.addCategories({ headers: { sessionToken : sessionToken,categoryName : category }});
             if (response.ok) {

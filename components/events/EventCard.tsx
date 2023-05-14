@@ -32,14 +32,14 @@ import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import UpdateOutlinedIcon from '@mui/icons-material/UpdateOutlined';
 export interface EventProps {
     event: Event
-};
+}
 export interface StatusProps {
     status: EventStatus
-};
+}
 export interface TitleProps {
     status: EventStatus,
     title: string
-};
+}
 // function stringToColor(string: string) {
 //     let hash = 0;
 //     let i;
@@ -105,7 +105,7 @@ export const EventCard = (props: EventProps) => {
         hour: 'numeric',
         minute: 'numeric',
         hour12: false // Use 24-hour clock format
-    };;
+    }
     const formattedStartTime = startTime.toLocaleDateString('en-US', options);
     const formattedEndTime = startTime.toLocaleDateString('en-US', options);
 
