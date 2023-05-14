@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { useRecoilState } from 'recoil';
 import { useApiClient } from '../../functions/useApiClient'
 import { sessionTokenState } from '../../recoil/sessionTokenState'
+import { firstLoadState } from '../../recoil/firstLoadState'
 import { Event, EventStatus} from 'api/Api';
 import { EventCard } from '@/components/events/EventCard';
 
@@ -60,6 +61,7 @@ export default function MyEvents() {
     const [myEvents, setMyEvents] = useState<Event[]>();
     const [loading, setLoading] = useState(true);
     const apiClient = useApiClient();
+    const [firstLoad, _] = useRecoilState(firstLoadState); // use this tocheck if cookie was loaded!
 
     const getMyEvents = async () => {
         console.log("im getting my events");
@@ -93,7 +95,8 @@ export default function MyEvents() {
     }
     useEffect(() => {
         getMyEvents();
-    }, []);
+    }, [firstLoad]); // make useEffect dependent on firstLoad.
+    // when cookie is loaded, getMyEvents will run correctly!
 
     return (
         <>
