@@ -68,24 +68,8 @@ export default function myEvents() {
             const response = await apiClient.events.getMyEvents({ headers: { sessionToken: sessionToken } });
             if (response.ok) {
                 //console.log(response.data)
-                const eventsFromResponse: Event[] = response.data.map((event: Event) => {
-                    return {
-                        id: event.id,
-                        title: event.title,
-                        name: event.name,
-                        startTime: event.startTime,
-                        endTime: event.endTime,
-                        latitude: event.latitude,
-                        longitude: event.longitude,
-                        status: event.status,
-                        categories:event.categories,
-                        freePlace: event.freePlace,
-                        maxPlace: event.maxPlace
-                    };
-                });
-                setMyEvents(eventsFromResponse);
+                setMyEvents(response.data);
                 setLoading(false);
-                console.log(eventsFromResponse);
             } else {
                 alert(response.statusText);
             }
@@ -103,12 +87,9 @@ export default function myEvents() {
             <main>
                 <PageLayout/>
                 <Grid sx={{marginTop:'70px', mb:3}}>
-                    {/*{loading? <h1>loading... </h1> : myEvents === undefined ? <h1>ups</h1> : myEvents.map((event)=><h1>{event.title}</h1>)}*/}
-                    {loading? <CircularProgress sx={{mt:3}}/> : myEvents === undefined ? <h1>error</h1> : myEvents.map((event)=>
-                        <>
+                    {loading? <CircularProgress sx={{mt:3}}/> : myEvents === undefined ? <h1>error</h1> :
+                        myEvents.map((event)=>
                             <EventCard event={event}/>
-
-                        </>
                     )}
                     {/*{sample.map((event)=>*/}
                     {/*    <EventCard event={event}/>*/}

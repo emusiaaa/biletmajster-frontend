@@ -14,7 +14,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import moment from 'moment';
-import { Event, EventStatus} from 'api/Api';
+import { Event, EventStatus} from '../../api/Api';
 import {Box, Typography, Grid, Chip } from '@mui/material';
 import { useState } from 'react';
 import { Map } from '@/components/Map';
@@ -23,7 +23,7 @@ import { LinearProgress } from '@mui/material';
 import EventIcon from '@mui/icons-material/Event';
 import { useRouter } from 'next/router';
 import { useRecoilState } from 'recoil';
-import { sessionTokenState } from 'recoil/sessionTokenState';
+import { sessionTokenState } from '../../recoil/sessionTokenState';
 import { useApiClient } from '../../functions/useApiClient'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
@@ -137,11 +137,11 @@ export const EventCard = (props: EventProps) => {
                     action={
                     <CardActions>
                         {props.event.status === EventStatus.Cancelled ? <></> :
-                            <IconButton aria-label="delete-event" onClick={handleDelete}>
+                            <IconButton data-testid="delete-event-button" aria-label="delete-event" onClick={handleDelete}>
                                 <DeleteIcon style={{ color: 'black' }} />
                             </IconButton>
                         }
-                        <IconButton aria-label="Edit event" onClick={handleEdit}>
+                        <IconButton data-testid="edit-event-button" aria-label="Edit event" onClick={handleEdit}>
                             <EditIcon style={{ color: 'black' }}/>
                         </IconButton>
                     </CardActions>
@@ -150,6 +150,7 @@ export const EventCard = (props: EventProps) => {
                     subheader={formattedStartTime + " - " + formattedEndTime}
                     titleTypographyProps={{variant:'h5' }}
                     sx={{padding:0, mb:1}}
+                    data-testid="card-header"
                 />
                 <Grid container>
 
@@ -158,7 +159,7 @@ export const EventCard = (props: EventProps) => {
                             <Grid container spacing={1}>
                                 {props.event.categories.map((cat) =>
                                     <Grid item>
-                                        <Chip label={cat.name}></Chip>
+                                        <Chip label={cat.name} data-testid="event-category"></Chip>
                                     </Grid>
                                 )}
                             </Grid>
@@ -184,7 +185,7 @@ export const EventCard = (props: EventProps) => {
                     <Grid xs={12} sx={{ mt:1, mb:3}}>
                             <Grid container>
                                 <Grid xs={6}>
-                                    <Typography gutterBottom>free places:</Typography>
+                                    <Typography data-testid="event-free-places" gutterBottom>free places:</Typography>
                                 </Grid>
                                 <Grid xs={6}>
                                     <Typography gutterBottom align='right' >
@@ -192,7 +193,7 @@ export const EventCard = (props: EventProps) => {
                                     </Typography>
                                 </Grid>
                             </Grid>
-                            <LinearProgress value={progressBarValue} variant="determinate" />
+                            <LinearProgress value={progressBarValue} variant="determinate" data-testid="progress-bar" />
                     </Grid>
 
                 </Grid>
