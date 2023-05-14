@@ -154,7 +154,7 @@ export const EventCard = (props: EventProps) => {
                 />
                 <Grid container>
 
-                    <Grid item xs={6}>
+                    <Grid item xs={8}>
                         <Box>
                             <Grid container spacing={1}>
                                 {props.event.categories.map((cat) =>
@@ -170,7 +170,7 @@ export const EventCard = (props: EventProps) => {
 
 
                     </Grid>
-                    <Grid item xs={6}>
+                    <Grid item xs={4}>
                         <>
                             <Map
                                 style={{ width: 240, height: 150, borderColor: "black", borderWidth: 1 }}
@@ -180,12 +180,12 @@ export const EventCard = (props: EventProps) => {
                         </>
 
                     </Grid>
-                    <Grid xs={12} sx={{ mt:1, mb:3}}>
+                    <Grid item xs={12} sx={{ mt:1, mb:3}}>
                             <Grid container>
-                                <Grid xs={6}>
+                                <Grid item xs={6}>
                                     <Typography data-testid="event-free-places" gutterBottom>free places:</Typography>
                                 </Grid>
-                                <Grid xs={6}>
+                                <Grid item xs={6}>
                                     <Typography gutterBottom align='right' >
                                         {props.event.freePlace + " out of "+props.event.maxPlace}
                                     </Typography>
