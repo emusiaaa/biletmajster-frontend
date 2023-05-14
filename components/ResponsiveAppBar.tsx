@@ -30,7 +30,7 @@ export const pages: (Page)[] = [
     },
     {
         title: "My events",
-        url: "/dashboard"
+        url: "/events/my"
     }]
 function ResponsiveAppBar() {
     const setSessionToken = useSetRecoilState(sessionTokenState);
