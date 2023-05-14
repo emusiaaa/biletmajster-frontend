@@ -1,4 +1,12 @@
-import { Card, FormControl, Grid, InputLabel, MenuItem, Select, Typography } from "@mui/material";
+import {
+  Card,
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Select,
+  Typography,
+} from "@mui/material";
 import { backendUrlState, urls } from "../recoil/backendUrlState";
 import { useState } from "react";
 import { useRecoilState } from "recoil";
@@ -14,17 +22,18 @@ export const BackendSelector = () => {
         id="backend"
         value={backendUrl}
         label="Backend URL"
-        onChange={e => {
+        onChange={(e) => {
           const option = e.target.value as any;
           console.log(option);
           setBackendUrl(option);
         }}
       >
-        {
-          urls.map(url =>
-            <MenuItem key={url.url} value={url.url}>{url.name}</MenuItem>)
-        }
+        {urls.map((url) => (
+          <MenuItem key={url.url} value={url.url}>
+            {url.name}
+          </MenuItem>
+        ))}
       </Select>
     </FormControl>
   );
-}
+};

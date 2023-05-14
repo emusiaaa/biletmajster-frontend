@@ -1,10 +1,10 @@
-import { useEffect } from 'react';
-import { useRecoilState } from 'recoil';
-import { backendUrlState, urls } from '../recoil/backendUrlState';
-import { firstLoadState } from '../recoil/firstLoadState';
-import { sessionTokenState } from '../recoil/sessionTokenState';
-import Cookies from 'js-cookie';
-import { Api } from '../api/Api';
+import { useEffect } from "react";
+import { useRecoilState } from "recoil";
+import { backendUrlState, urls } from "../recoil/backendUrlState";
+import { firstLoadState } from "../recoil/firstLoadState";
+import { sessionTokenState } from "../recoil/sessionTokenState";
+import Cookies from "js-cookie";
+import { Api } from "../api/Api";
 
 export const useCookies = () => {
   const [firstLoad, setFirstLoad] = useRecoilState(firstLoadState);
@@ -17,10 +17,8 @@ export const useCookies = () => {
       const newUrl = Cookies.get("backendUrl");
       const token = Cookies.get("sessionToken");
       //console.log("First load values: " + newUrl + ", " + token);
-      if (newUrl !== undefined)
-        setBackendUrl(newUrl)
-      if (token !== undefined)
-        setSessionToken(token);
+      if (newUrl !== undefined) setBackendUrl(newUrl);
+      if (token !== undefined) setSessionToken(token);
       setFirstLoad(true);
     }
   }, [firstLoad]);
@@ -37,10 +35,8 @@ export const useCookies = () => {
   useEffect(() => {
     if (firstLoad) {
       //console.log("sessionToken changed to " + sessionToken);
-      if (sessionToken === undefined)
-        Cookies.remove("sessionToken");
-      else
-        Cookies.set("sessionToken", sessionToken);
+      if (sessionToken === undefined) Cookies.remove("sessionToken");
+      else Cookies.set("sessionToken", sessionToken);
     }
   }, [firstLoad, sessionToken]);
-}
+};
