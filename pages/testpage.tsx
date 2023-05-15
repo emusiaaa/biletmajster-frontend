@@ -5,14 +5,18 @@ import { Map } from "@/components/Map";
 import { Button, Card, Typography } from "@mui/material";
 import { LocationOn } from "@mui/icons-material";
 import { useState } from "react";
+import { PhotoSelector } from "@/components/PhotoSelector";
 
 export default function TestPage() {
   //return <RegisterCard />
   const [pos, setPos] = useState<[number, number] | undefined>(undefined);
   const [newPos, setNewPos] = useState<[number, number] | undefined>(undefined);
 
+  const [img, setImg] = useState<string | undefined>(undefined);
+
   return (
     <>
+      <PhotoSelector image={img} setImage={setImg} />
       <h1>Map component test?</h1>
       <Map
         style={{

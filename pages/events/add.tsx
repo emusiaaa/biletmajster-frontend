@@ -36,6 +36,7 @@ import { EventValidator } from "../../validators/EventValidator";
 import { useApiClient } from "../../functions/useApiClient";
 import { Map } from "@/components/Map";
 import { firstLoadState } from "../../recoil/firstLoadState";
+import { PhotoSelector } from "@/components/PhotoSelector";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -69,6 +70,7 @@ export default function Categories() {
   const [beginDate, setBeginDate] = useState<Dayjs | null>(null);
   const [endDate, setEndDate] = useState<Dayjs | null>(null);
   const [selectedCategories, setSelectedCategories] = useState<Category[]>([]);
+  const [placeSchema, setPlaceSchema] = useState<string | undefined>(undefined);
   const [errors, setErrors] = useState<ValidationErrors<EventForm>>({});
 
   const apiClient = useApiClient();
@@ -95,7 +97,7 @@ export default function Categories() {
       longitude: long.toString(),
       maxPlace: Number(maxPlaces),
       categoriesIds: selectedCategories.map((cat) => cat.id),
-      placeSchema: "empty",
+      placeSchema: placeSchema,
     };
     const validation = new EventValidator().validate(newEvent);
     if (!Object.values(validation).every((val) => val === undefined)) {
@@ -348,6 +350,9 @@ export default function Categories() {
                     <AddCategoryPopUp />
                   </Grid>
                 </Grid>
+                <div style={{ marginBottom: 16 }}>
+                  <PhotoSelector image={placeSchema} setImage={setPlaceSchema} />
+                </div>
                 <Button
                   data-testid="add-btn"
                   type="submit"
