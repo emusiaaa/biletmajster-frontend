@@ -1,4 +1,4 @@
-import { AddAPhoto, Clear } from "@mui/icons-material"
+import { AddAPhoto, Clear, Delete } from "@mui/icons-material"
 import { Box, Card, CircularProgress, Grid, IconButton, Typography } from "@mui/material"
 import Image from "next/image";
 import { useRef, useState } from "react";
@@ -48,6 +48,9 @@ export const PhotoSelector = (props: PhotoSelectorProps) => {
         <Grid item xs sx={{ borderBottom: "1px solid #ECEBE4" }} container alignItems="center">
           <IconButton color="secondary" onClick={handleClick}>
             <AddAPhoto />
+          </IconButton>
+          <IconButton color="secondary" onClick={() => props.setImage(undefined)}>
+            <Delete />
           </IconButton>
 
           <Typography variant="caption">
