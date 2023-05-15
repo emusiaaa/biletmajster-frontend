@@ -94,7 +94,7 @@ export default function Categories() {
       latitude: lat.toString(),
       longitude: long.toString(),
       maxPlace: Number(maxPlaces),
-      categoriesIds: selectedCategories.map(cat => cat.id),
+      categoriesIds: selectedCategories.map((cat) => cat.id),
       placeSchema: "empty",
     };
     const validation = new EventValidator().validate(newEvent);
@@ -309,8 +309,8 @@ export default function Categories() {
                         multiple
                         fullWidth
                         value={selectedCategories}
-                        onChange={e => {
-                          console.log(e.target.value)
+                        onChange={(e) => {
+                          console.log(e.target.value);
                           setSelectedCategories(e.target.value as Category[]);
                         }}
                         input={
@@ -333,10 +333,7 @@ export default function Categories() {
                       >
                         {categories ? (
                           categories.map((category) => (
-                            <MenuItem
-                              key={category.id}
-                              value={category as any}
-                            >
+                            <MenuItem key={category.id} value={category as any}>
                               {category.name}
                             </MenuItem>
                           ))
