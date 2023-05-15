@@ -97,7 +97,7 @@ export const PhotoSelector = (props: PhotoSelectorProps) => {
             justifyContent="center"
           >
             {props.image === undefined ? undefined : (
-              <Image
+              <img
                 alt={"Place Schema"}
                 src={props.image}
                 width="100"
