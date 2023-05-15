@@ -32,6 +32,7 @@ import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import UpdateOutlinedIcon from "@mui/icons-material/UpdateOutlined";
 export interface EventProps {
   event: Event;
+  hideEditButtons?: boolean
 }
 export interface StatusProps {
   status: EventStatus;
@@ -155,8 +156,9 @@ export const EventCard = (props: EventProps) => {
           //     </Avatar>
           // }
           action={
+            (props.hideEditButtons ?? false) ? undefined : 
             <CardActions>
-              {props.event.status === EventStatus.Cancelled ? (
+              {props.event.status === EventStatus.Cancelled  ? (
                 <></>
               ) : (
                 <IconButton
