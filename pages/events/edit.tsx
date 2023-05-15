@@ -1,13 +1,12 @@
 import Head from "next/head";
-import Image from "next/image";
-import { SyntheticEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import PageLayout from "@/components/PageLayout";
-
 import AddCategoryPopUp from "@/components/events/AddCategoryPopUp";
 import {
   Box,
   Button,
   Chip,
+  CircularProgress,
   Container,
   CssBaseline,
   FormControl,
@@ -23,19 +22,19 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import { createTheme } from "@mui/material";
-import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { LocalizationProvider } from "@mui/x-date-pickers";
 import dayjs, { Dayjs } from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DateTimePicker } from "@mui/x-date-pickers";
-import { Category, EventForm } from "api/Api";
+import { Category, Event, EventForm, EventPatch } from "api/Api";
 import { useRecoilState } from "recoil";
 import { sessionTokenState } from "../../recoil/sessionTokenState";
 import { ValidationErrors } from "fluentvalidation-ts/dist/ValidationErrors";
 import { EventValidator } from "../../validators/EventValidator";
 import { useApiClient } from "../../functions/useApiClient";
+import { useRouter } from "next/router";
 import { Map } from "@/components/Map";
-import { firstLoadState } from "../../recoil/firstLoadState";
+import { firstLoadState } from "recoil/firstLoadState";
 import { PhotoSelector } from "@/components/PhotoSelector";
 
 const ITEM_HEIGHT = 48;
@@ -60,6 +59,7 @@ function getStyles(name: string, personName: readonly string[], theme: Theme) {
 export default function Categories() {
   const [loaded, _] = useRecoilState(firstLoadState);
   const [sessionToken, setSessionToken] = useRecoilState(sessionTokenState);
+  const [editedEvent, setEditedEvent] = useState<Event | undefined>(undefined);
   const [title, setTitle] = useState("");
   const [name, setName] = useState("");
   const [maxPlaces, setMaxPlaces] = useState<string>("");
@@ -70,11 +70,12 @@ export default function Categories() {
   const [beginDate, setBeginDate] = useState<Dayjs | null>(null);
   const [endDate, setEndDate] = useState<Dayjs | null>(null);
   const [selectedCategories, setSelectedCategories] = useState<Category[]>([]);
-  const [placeSchema, setPlaceSchema] = useState<string | undefined>(undefined);
   const [errors, setErrors] = useState<ValidationErrors<EventForm>>({});
+  const [placeSchema, setPlaceSchema] = useState<string | undefined>(undefined);
 
   const apiClient = useApiClient();
   const theme = useTheme();
+  const router = useRouter();
 
   const handleMaxPlaces = (e: React.ChangeEvent<HTMLInputElement>) => {
     const max = e.target.value;
@@ -86,9 +87,11 @@ export default function Categories() {
       setHelperText("Please put a valid integer number");
     }
   };
-  const addEvent = async () => {
+  const editEvent = async () => {
+    if (editedEvent === undefined) return;
+
     setErrors({});
-    const newEvent: EventForm = {
+    const patch: EventPatch = {
       title: title,
       name: name,
       startTime: beginDate ? beginDate.unix() : 0,
@@ -99,23 +102,25 @@ export default function Categories() {
       categoriesIds: selectedCategories.map((cat) => cat.id),
       placeSchema: placeSchema ?? "",
     };
-    const validation = new EventValidator().validate(newEvent);
+    const validation = new EventValidator().validate(patch as EventForm);
     if (!Object.values(validation).every((val) => val === undefined)) {
       setErrors(validation);
       console.log(validation);
     } else {
       if (sessionToken !== undefined) {
-        const response = await apiClient.events.addEvent(newEvent, {
-          headers: { sessionToken: sessionToken },
-        });
+        const response = await apiClient.events.patchEvent(
+          editedEvent.id.toString(),
+          patch,
+          { headers: { sessionToken: sessionToken } }
+        );
         if (response.ok) {
-          console.log(response);
-          alert("Created! Event id: " + response.data.id);
+          alert("Event modified!");
+          router.push("/dashboard");
         } else {
           alert("Received error: " + response.statusText);
         }
       } else {
-        console.log("nie masz tokena");
+        alert("No token!");
       }
     }
   };
@@ -135,13 +140,43 @@ export default function Categories() {
       alert(response.statusText);
     }
   };
+  const getEvent = async (id: number) => {
+    const response = await apiClient.events.getEventById(id);
+    if (response.ok) {
+      const event = response.data;
+      setEditedEvent(event);
+      setTitle(event.title);
+      setName(event.name);
+      setMaxPlaces(event.maxPlace.toString());
+      setBeginDate(dayjs.unix(event.startTime));
+      setEndDate(dayjs.unix(event.endTime));
+      setLat(Number(event.latitude));
+      setLong(Number(event.longitude));
+      setSelectedCategories(event.categories);
+      setPlaceSchema(event.placeSchema);
+    } else {
+      if (response.status === 404) {
+        alert("This event does not exist.");
+        router.push("/dashboard");
+      }
+      alert(response.statusText);
+    }
+  };
   useEffect(() => {
     if (loaded) getCategories();
   }, [loaded]);
+  useEffect(() => {
+    if (router.isReady) {
+      const { id } = router.query;
+      if (id !== undefined) {
+        getEvent(Number(id as string));
+      }
+    }
+  }, [router]);
   return (
     <>
       <Head>
-        <title>Add new event</title>
+        <title>Edit event</title>
       </Head>
       <main>
         <PageLayout />
@@ -170,7 +205,7 @@ export default function Categories() {
                   color: "black",
                 }}
               >
-                ADD NEW EVENT
+                MODIFY EVENT
               </Typography>
               <Box>
                 <TextField
@@ -261,14 +296,25 @@ export default function Categories() {
                         </Grid>
                       </Grid>
                       <Grid item xs={6}>
-                        <Map
-                          orangePin={[lat, long]}
-                          style={{ height: "calc(100% - 16px)", width: "100%" }}
-                          onClick={(pos) => {
-                            setLat(pos[0]);
-                            setLong(pos[1]);
-                          }}
-                        />
+                        {editedEvent === undefined ? (
+                          <CircularProgress />
+                        ) : (
+                          <Map
+                            bluePin={[
+                              Number(editedEvent.latitude),
+                              Number(editedEvent.longitude),
+                            ]}
+                            orangePin={[lat, long]}
+                            style={{
+                              height: "calc(100% - 16px)",
+                              width: "100%",
+                            }}
+                            onClick={(pos) => {
+                              setLat(pos[0]);
+                              setLong(pos[1]);
+                            }}
+                          />
+                        )}
                       </Grid>
                     </Grid>
                     <Grid container spacing={2}>
@@ -361,9 +407,9 @@ export default function Categories() {
                   type="submit"
                   fullWidth
                   variant="contained"
-                  onClick={addEvent}
+                  onClick={editEvent}
                 >
-                  ADD
+                  MODIFY
                 </Button>
               </Box>
             </Box>

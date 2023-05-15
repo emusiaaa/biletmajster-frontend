@@ -4,7 +4,7 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import { sessionTokenState } from "../recoil/sessionTokenState";
 
 /**
- * Redirects user if he is logged in (or not). 
+ * Redirects user if he is logged in (or not).
  * @example
  * ```
  * useRedirect({
@@ -13,7 +13,10 @@ import { sessionTokenState } from "../recoil/sessionTokenState";
  * })
  * ```
  */
-export const useRedirect = (arg: { ifLoggedIn?: string, ifNotLoggedIn?: string }) => {
+export const useRedirect = (arg: {
+  ifLoggedIn?: string;
+  ifNotLoggedIn?: string;
+}) => {
   const tokenState = useRecoilValue(sessionTokenState);
   const router = useRouter();
 
@@ -25,4 +28,4 @@ export const useRedirect = (arg: { ifLoggedIn?: string, ifNotLoggedIn?: string }
         router.push(arg.ifLoggedIn);
     }
   }, [tokenState, router, arg]);
-}
+};
