@@ -35,6 +35,7 @@ import { useApiClient } from "../../functions/useApiClient";
 import { useRouter } from "next/router";
 import { Map } from "@/components/Map";
 import { firstLoadState } from "recoil/firstLoadState";
+import { PhotoSelector } from "@/components/PhotoSelector";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -70,6 +71,7 @@ export default function Categories() {
   const [endDate, setEndDate] = useState<Dayjs | null>(null);
   const [selectedCategories, setSelectedCategories] = useState<Category[]>([]);
   const [errors, setErrors] = useState<ValidationErrors<EventForm>>({});
+  const [placeSchema, setPlaceSchema] = useState<string | undefined>(undefined);
 
   const apiClient = useApiClient();
   const theme = useTheme();
@@ -98,7 +100,7 @@ export default function Categories() {
       longitude: long.toString(),
       maxPlace: Number(maxPlaces),
       categoriesIds: selectedCategories.map((cat) => cat.id),
-      placeSchema: "empty",
+      placeSchema: placeSchema ?? "",
     };
     const validation = new EventValidator().validate(patch as EventForm);
     if (!Object.values(validation).every((val) => val === undefined)) {
@@ -141,7 +143,7 @@ export default function Categories() {
   const getEvent = async (id: number) => {
     const response = await apiClient.events.getEventById(id);
     if (response.ok) {
-      const event = response.data as Event;
+      const event = response.data;
       setEditedEvent(event);
       setTitle(event.title);
       setName(event.name);
@@ -151,6 +153,7 @@ export default function Categories() {
       setLat(Number(event.latitude));
       setLong(Number(event.longitude));
       setSelectedCategories(event.categories);
+      setPlaceSchema(event.placeSchema);
     } else {
       if (response.status === 404) {
         alert("This event does not exist.");
@@ -393,6 +396,12 @@ export default function Categories() {
                     <AddCategoryPopUp />
                   </Grid>
                 </Grid>
+                <div style={{ marginBottom: 16 }}>
+                  <PhotoSelector
+                    image={placeSchema}
+                    setImage={setPlaceSchema}
+                  />
+                </div>
                 <Button
                   data-testid="add-btn"
                   type="submit"
