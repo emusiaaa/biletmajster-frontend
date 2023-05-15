@@ -68,8 +68,7 @@ export default function Categories() {
   const [categories, setCategories] = useState<Category[] | null>(null);
   const [beginDate, setBeginDate] = useState<Dayjs | null>(null);
   const [endDate, setEndDate] = useState<Dayjs | null>(null);
-  const [categoryNames, setCategoryNames] = useState<string[]>([]);
-  const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<Category[]>([]);
   const [errors, setErrors] = useState<ValidationErrors<EventForm>>({});
 
   const apiClient = useApiClient();
@@ -85,21 +84,6 @@ export default function Categories() {
       setHelperText("Please put a valid integer number");
     }
   };
-  const handleChangeBeginDate = (newValue: Dayjs | null) => {
-    setBeginDate(newValue);
-  };
-  const handleChangeEndDate = (newValue: Dayjs | null) => {
-    setEndDate(newValue);
-  };
-  const handleSelector = (
-    event: SelectChangeEvent<typeof categoryNames>,
-    obj: any
-  ) => {
-    const {
-      target: { value },
-    } = event;
-    setCategoryNames(typeof value === "string" ? value.split(",") : value);
-  };
   const addEvent = async () => {
     setErrors({});
     const newEvent: EventForm = {
@@ -110,7 +94,7 @@ export default function Categories() {
       latitude: lat.toString(),
       longitude: long.toString(),
       maxPlace: Number(maxPlaces),
-      categoriesIds: categoryNames.map((e) => Number(e)),
+      categoriesIds: selectedCategories.map(cat => cat.id),
       placeSchema: "empty",
     };
     const validation = new EventValidator().validate(newEvent);
@@ -324,8 +308,11 @@ export default function Categories() {
                         id="demo-multiple-chip"
                         multiple
                         fullWidth
-                        value={categoryNames}
-                        onChange={handleSelector}
+                        value={selectedCategories}
+                        onChange={e => {
+                          console.log(e.target.value)
+                          setSelectedCategories(e.target.value as Category[]);
+                        }}
                         input={
                           <OutlinedInput
                             id="select-multiple-chip"
@@ -337,7 +324,7 @@ export default function Categories() {
                             sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}
                           >
                             {selected.map((value) => (
-                              <Chip key={value} label={value} />
+                              <Chip key={value.id} label={value.name} />
                             ))}
                           </Box>
                         )}
@@ -348,12 +335,7 @@ export default function Categories() {
                           categories.map((category) => (
                             <MenuItem
                               key={category.id}
-                              value={category.id}
-                              style={getStyles(
-                                category.name,
-                                categoryNames,
-                                theme
-                              )}
+                              value={category as any}
                             >
                               {category.name}
                             </MenuItem>
