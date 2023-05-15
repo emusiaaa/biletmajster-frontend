@@ -32,7 +32,7 @@ import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import UpdateOutlinedIcon from "@mui/icons-material/UpdateOutlined";
 export interface EventProps {
   event: Event;
-  hideEditButtons?: boolean
+  hideEditButtons?: boolean;
 }
 export interface StatusProps {
   status: EventStatus;
@@ -156,27 +156,28 @@ export const EventCard = (props: EventProps) => {
           //     </Avatar>
           // }
           action={
-            (props.hideEditButtons ?? false) ? undefined : 
-            <CardActions>
-              {props.event.status === EventStatus.Cancelled  ? (
-                <></>
-              ) : (
+            props.hideEditButtons ?? false ? undefined : (
+              <CardActions>
+                {props.event.status === EventStatus.Cancelled ? (
+                  <></>
+                ) : (
+                  <IconButton
+                    data-testid="delete-event-button"
+                    aria-label="delete-event"
+                    onClick={handleDelete}
+                  >
+                    <DeleteIcon style={{ color: "black" }} />
+                  </IconButton>
+                )}
                 <IconButton
-                  data-testid="delete-event-button"
-                  aria-label="delete-event"
-                  onClick={handleDelete}
+                  data-testid="edit-event-button"
+                  aria-label="Edit event"
+                  onClick={handleEdit}
                 >
-                  <DeleteIcon style={{ color: "black" }} />
+                  <EditIcon style={{ color: "black" }} />
                 </IconButton>
-              )}
-              <IconButton
-                data-testid="edit-event-button"
-                aria-label="Edit event"
-                onClick={handleEdit}
-              >
-                <EditIcon style={{ color: "black" }} />
-              </IconButton>
-            </CardActions>
+              </CardActions>
+            )
           }
           title={
             <Title title={props.event.title} status={props.event.status} />

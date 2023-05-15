@@ -14,16 +14,15 @@ export default function Dashboard() {
   const apiClient = useApiClient();
 
   useEffect(() => {
-    apiClient.events.getEvents()
-      .then(response => {
-        if (response.ok) {
-          //console.log(response.data)
-          setEvents(response.data);
-          setLoading(false);
-        } else {
-          alert(response.statusText);
-        }
-      })
+    apiClient.events.getEvents().then((response) => {
+      if (response.ok) {
+        //console.log(response.data)
+        setEvents(response.data);
+        setLoading(false);
+      } else {
+        alert(response.statusText);
+      }
+    });
   }, []);
 
   return (
@@ -40,7 +39,9 @@ export default function Dashboard() {
           ) : events === undefined ? (
             <h1>error</h1>
           ) : (
-            events.map((event) => <EventCard event={event} key={event.id} hideEditButtons />)
+            events.map((event) => (
+              <EventCard event={event} key={event.id} hideEditButtons />
+            ))
           )}
           {/*{sample.map((event)=>*/}
           {/*    <EventCard event={event}/>*/}
