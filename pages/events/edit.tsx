@@ -153,7 +153,7 @@ export default function Categories() {
       setLat(Number(event.latitude));
       setLong(Number(event.longitude));
       setSelectedCategories(event.categories);
-      setPlaceSchema(event.placeSchema)
+      setPlaceSchema(event.placeSchema);
     } else {
       if (response.status === 404) {
         alert("This event does not exist.");
@@ -397,7 +397,10 @@ export default function Categories() {
                   </Grid>
                 </Grid>
                 <div style={{ marginBottom: 16 }}>
-                  <PhotoSelector image={placeSchema} setImage={setPlaceSchema} />
+                  <PhotoSelector
+                    image={placeSchema}
+                    setImage={setPlaceSchema}
+                  />
                 </div>
                 <Button
                   data-testid="add-btn"

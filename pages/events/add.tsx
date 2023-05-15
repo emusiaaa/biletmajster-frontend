@@ -97,7 +97,7 @@ export default function Categories() {
       longitude: long.toString(),
       maxPlace: Number(maxPlaces),
       categoriesIds: selectedCategories.map((cat) => cat.id),
-      placeSchema: placeSchema,
+      placeSchema: placeSchema ?? "",
     };
     const validation = new EventValidator().validate(newEvent);
     if (!Object.values(validation).every((val) => val === undefined)) {
@@ -351,7 +351,10 @@ export default function Categories() {
                   </Grid>
                 </Grid>
                 <div style={{ marginBottom: 16 }}>
-                  <PhotoSelector image={placeSchema} setImage={setPlaceSchema} />
+                  <PhotoSelector
+                    image={placeSchema}
+                    setImage={setPlaceSchema}
+                  />
                 </div>
                 <Button
                   data-testid="add-btn"
