@@ -66,14 +66,13 @@ export default function Categories() {
   const [placeSchema, setPlaceSchema] = useState<string | undefined>(undefined);
 
   const applyPlaceSchema = (newSchema: File | undefined) => {
-    if (newSchema === undefined)
-      setPlaceSchema(undefined);
+    if (newSchema === undefined) setPlaceSchema(undefined);
     else {
       const reader = new FileReader();
       reader.readAsDataURL(newSchema);
       reader.onload = () => setPlaceSchema(reader.result as string | undefined);
     }
-  }
+  };
 
   const apiClient = useApiClient();
   const theme = useTheme();
@@ -403,7 +402,7 @@ export default function Categories() {
                     title="Place schema"
                     maxImages={1}
                     imageSrcs={placeSchema === undefined ? [] : [placeSchema]}
-                    addImage={file => applyPlaceSchema(file)}
+                    addImage={(file) => applyPlaceSchema(file)}
                     removeByIndex={() => applyPlaceSchema(undefined)}
                     allowedTypes={["png"]}
                   />

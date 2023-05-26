@@ -1,17 +1,17 @@
 import { render, screen, act, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { PhotoManager } from '../components/PhotoManager';
+import { PhotoManager } from "../components/PhotoManager";
 
 beforeAll(() => {
   const user = userEvent.setup();
-})
+});
 
 describe("PhotoManager", () => {
   it("renders all input data (title, types, max photos...)", () => {
     const addMock = jest.fn();
     const removeMock = jest.fn();
     const images: string[] = [];
-    const types = ['jpg', 'png'];
+    const types = ["jpg", "png"];
     render(
       <PhotoManager
         title="TITLE"
@@ -25,8 +25,12 @@ describe("PhotoManager", () => {
     );
     expect(screen.getByText("TITLE")).toBeDefined();
     expect(screen.getByText("TITLE")).toBeDefined();
-    expect(screen.getByText(text => text.includes("Max. images: 5"))).toBeDefined();
-    types.forEach(type => expect(screen.getByText(text => text.includes(type))));
+    expect(
+      screen.getByText((text) => text.includes("Max. images: 5"))
+    ).toBeDefined();
+    types.forEach((type) =>
+      expect(screen.getByText((text) => text.includes(type)))
+    );
   });
 
   it("sends file when it is submitted", async () => {
@@ -36,8 +40,8 @@ describe("PhotoManager", () => {
     const images: string[] = [];
     const str = "some string";
     const blob = new Blob([str]);
-    const file = new File([blob], 'image.png', {
-      type: 'image/png',
+    const file = new File([blob], "image.png", {
+      type: "image/png",
     });
     File.prototype.text = jest.fn().mockResolvedValueOnce(str);
     render(
@@ -50,10 +54,10 @@ describe("PhotoManager", () => {
       />
     );
 
-    const input = screen.getByTestId('upload-input');
+    const input = screen.getByTestId("upload-input");
     await act(() => {
       user.upload(input, file);
-    })
+    });
     await waitFor(() => expect(addMock).toHaveBeenCalled());
   });
 
@@ -61,7 +65,7 @@ describe("PhotoManager", () => {
     const user = userEvent.setup();
     const addMock = jest.fn();
     const removeMock = jest.fn();
-    const images = ["url1", "url2", "url3"]
+    const images = ["url1", "url2", "url3"];
     render(
       <PhotoManager
         title="TITLE"
@@ -81,7 +85,7 @@ describe("PhotoManager", () => {
   it("disables Add button when max number of photos is reached", () => {
     const addMock = jest.fn();
     const removeMock = jest.fn();
-    const images = ["url1", "url2", "url3"]
+    const images = ["url1", "url2", "url3"];
     render(
       <PhotoManager
         title="TITLE"
@@ -99,10 +103,9 @@ describe("PhotoManager", () => {
   });
 
   it("disables buttons with component is forcefully disabled", () => {
-
     const addMock = jest.fn();
     const removeMock = jest.fn();
-    const images = ["url1", "url2"]
+    const images = ["url1", "url2"];
     render(
       <PhotoManager
         title="TITLE"

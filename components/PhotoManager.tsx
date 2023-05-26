@@ -1,20 +1,15 @@
 import { AddAPhoto, Clear, Delete } from "@mui/icons-material";
-import {
-  Box,
-  Grid,
-  IconButton,
-  Typography,
-} from "@mui/material";
+import { Box, Grid, IconButton, Typography } from "@mui/material";
 import { useRef, useState } from "react";
 
 export interface PhotoManagerProps {
-  title?: string,
-  maxImages?: number,
-  imageSrcs: string[],
-  addImage: (file: File) => void,
-  removeByIndex: (index: number) => void,
-  allowedTypes?: string[],
-  enabled?: boolean
+  title?: string;
+  maxImages?: number;
+  imageSrcs: string[];
+  addImage: (file: File) => void;
+  removeByIndex: (index: number) => void;
+  allowedTypes?: string[];
+  enabled?: boolean;
 }
 
 const maxFileSize = 4 * 1048576; // 4 MB
@@ -32,7 +27,11 @@ export const PhotoManager = (props: PhotoManagerProps) => {
     const split = fileUploaded.name.split(".");
     const type = split[split.length - 1];
 
-    if (props.allowedTypes !== undefined && props.allowedTypes.find(allType => allType.toLowerCase() === type) === undefined) {
+    if (
+      props.allowedTypes !== undefined &&
+      props.allowedTypes.find((allType) => allType.toLowerCase() === type) ===
+        undefined
+    ) {
       alert("File type " + type + " is not allowed.");
       return;
     }
@@ -41,7 +40,7 @@ export const PhotoManager = (props: PhotoManagerProps) => {
       return;
     }
 
-    props.addImage(fileUploaded)
+    props.addImage(fileUploaded);
   };
 
   return (
@@ -71,15 +70,21 @@ export const PhotoManager = (props: PhotoManagerProps) => {
           <IconButton
             color="secondary"
             onClick={handleClick}
-            disabled={!(props.enabled ?? true) || (props.imageSrcs?.length ?? 0) === (props.maxImages ?? -1)} data-testid="add-button">
+            disabled={
+              !(props.enabled ?? true) ||
+              (props.imageSrcs?.length ?? 0) === (props.maxImages ?? -1)
+            }
+            data-testid="add-button"
+          >
             <AddAPhoto />
           </IconButton>
 
-          <Typography fontWeight="bold">
-            {(props.title ?? "")}&nbsp;
-          </Typography>
+          <Typography fontWeight="bold">{props.title ?? ""}&nbsp;</Typography>
 
-          <Typography variant="caption">Max. images: {props.maxImages ?? "unlimited"}, allowed formats: {props.allowedTypes?.join(", " ?? "Any type")}, max. 4 MB each</Typography>
+          <Typography variant="caption">
+            Max. images: {props.maxImages ?? "unlimited"}, allowed formats:{" "}
+            {props.allowedTypes?.join(", " ?? "Any type")}, max. 4 MB each
+          </Typography>
         </Grid>
         <Box
           sx={{
@@ -87,10 +92,10 @@ export const PhotoManager = (props: PhotoManagerProps) => {
             overflow: "auto",
             display: "flex",
             padding: 1,
-            gap: 1
+            gap: 1,
           }}
         >
-          {props.imageSrcs.map((imgSrc, index) =>
+          {props.imageSrcs.map((imgSrc, index) => (
             <Box
               key={imgSrc}
               sx={{
@@ -99,7 +104,7 @@ export const PhotoManager = (props: PhotoManagerProps) => {
                 display: "flex",
                 flexShrink: 0,
                 border: "1px solid lightgray",
-                borderRadius: 2
+                borderRadius: 2,
               }}
               alignItems="center"
               alignContent="center"
@@ -114,7 +119,7 @@ export const PhotoManager = (props: PhotoManagerProps) => {
                     style={{
                       width: "100%",
                       height: "auto",
-                      borderRadius: 8
+                      borderRadius: 8,
                     }}
                   />
                 </Grid>
@@ -130,7 +135,7 @@ export const PhotoManager = (props: PhotoManagerProps) => {
                 </Grid>
               </Grid>
             </Box>
-          )}
+          ))}
         </Box>
       </Grid>
     </Box>
