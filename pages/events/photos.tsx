@@ -22,7 +22,7 @@ export default function MyEvents() {
   const [sessionToken, _1] = useRecoilState(sessionTokenState);
   const [backend, _2] = useRecoilState(backendUrlState);
 
-  const canEdit = backend === urls[0].url || backend.includes("localhost");
+  const canUpload = backend === urls[0].url || backend.includes("localhost");
   const apiClient = useApiClient();
   const router = useRouter();
   const { id } = router.query;
@@ -37,8 +37,7 @@ export default function MyEvents() {
     }
     const response = await apiClient.events.getPhoto(Number(id));
     if (!response.ok) {
-      //router.push("/dashboard");
-      alert("erros");
+      router.push("/dashboard");
       return;
     }
     setPhotos(response.data);
@@ -68,7 +67,7 @@ export default function MyEvents() {
       if (response.ok) {
         await downloadAll();
       } else {
-        console.log(response);
+        alert(response.statusText);
       }
     } catch (error) {
       alert(error);
@@ -89,7 +88,7 @@ export default function MyEvents() {
       if (response.ok) {
         await downloadAll();
       } else {
-        alert(await response.json());
+        alert(response.statusText);
       }
     } catch (error) {
       alert(error);
@@ -132,9 +131,9 @@ export default function MyEvents() {
             >
               PHOTOS FOR EVENT: {router.query.id ?? "Loading..."}
             </Typography>
-            {canEdit ? undefined : (
+            {canUpload ? undefined : (
               <Typography>
-                Please use BiletMajster backend to edit event photos.
+                Please use BiletMajster backend to upload new event photos.
               </Typography>
             )}
           </Box>
@@ -145,7 +144,8 @@ export default function MyEvents() {
             addImage={addPhoto}
             removeByIndex={removePhoto}
             allowedTypes={["png", "jpg", "jpeg"]}
-            enabled={canEdit && !loading}
+            enabled={!loading}
+            forceDisableUpload={!canUpload}
           />
           <Button
             sx={{ mt: 2 }}

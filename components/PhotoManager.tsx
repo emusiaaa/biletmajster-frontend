@@ -10,6 +10,7 @@ export interface PhotoManagerProps {
   removeByIndex: (index: number) => void;
   allowedTypes?: string[];
   enabled?: boolean;
+  forceDisableUpload?: boolean;
 }
 
 const maxFileSize = 4 * 1048576; // 4 MB
@@ -71,6 +72,7 @@ export const PhotoManager = (props: PhotoManagerProps) => {
             color="secondary"
             onClick={handleClick}
             disabled={
+              (props.forceDisableUpload ?? false) ||
               !(props.enabled ?? true) ||
               (props.imageSrcs?.length ?? 0) === (props.maxImages ?? -1)
             }
