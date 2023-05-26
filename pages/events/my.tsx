@@ -8,53 +8,6 @@ import { sessionTokenState } from "../../recoil/sessionTokenState";
 import { Event, EventStatus } from "api/Api";
 import { EventCard } from "@/components/events/EventCard";
 
-const sample: Event[] = [
-  {
-    id: 2,
-    title: "Bal u krasnali",
-    startTime: 1682930711,
-    endTime: 1684140311,
-    latitude: "52.22216",
-    longitude: "21.00698",
-    name: "To wydarzenie własnie trwa",
-    status: EventStatus.InFuture,
-    categories: [
-      {
-        id: 1,
-        name: "Sport",
-      },
-      {
-        id: 3,
-        name: "Science",
-      },
-    ],
-    freePlace: 10,
-    maxPlace: 10,
-  },
-  {
-    id: 2,
-    title: "Urodzinkii",
-    startTime: 1682930711,
-    endTime: 1684140311,
-    latitude: "52.22216",
-    longitude: "21.00698",
-    name: "To wydarzenie własnie trwa To wydarzenie własnie trwaTo wydarzenie własnie trwaTo wydarzenie własnie trwaTo wydarzenie własnie trwaTo wydarzenie własnie trwaTo wydarzenie własnie trwaTo wydarzenie własnie trwaTo wydarzenie własnie trwaTo wydarzenie własnie trwaTo wydarzenie własnie trwaTo wydarzenie własnie trwa",
-    status: EventStatus.Done,
-    categories: [
-      {
-        id: 1,
-        name: "Sport",
-      },
-      {
-        id: 3,
-        name: "Science",
-      },
-    ],
-    freePlace: 13,
-    maxPlace: 56,
-  },
-];
-
 export default function MyEvents() {
   const [sessionToken, setSessionToken] = useRecoilState(sessionTokenState);
   const [myEvents, setMyEvents] = useState<Event[]>();
@@ -96,9 +49,6 @@ export default function MyEvents() {
           ) : (
             myEvents.map((event) => <EventCard event={event} key={event.id} />)
           )}
-          {/*{sample.map((event)=>*/}
-          {/*    <EventCard event={event}/>*/}
-          {/*)}*/}
         </Grid>
       </main>
     </>
