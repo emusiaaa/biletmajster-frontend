@@ -36,7 +36,7 @@ import { EventValidator } from "../../validators/EventValidator";
 import { useApiClient } from "../../functions/useApiClient";
 import { Map } from "@/components/Map";
 import { firstLoadState } from "../../recoil/firstLoadState";
-import { PhotoSelector } from "@/components/PhotoSelector";
+import { PhotoManager } from "@/components/PhotoManager";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -49,14 +49,6 @@ const MenuProps = {
   },
 };
 
-function getStyles(name: string, personName: readonly string[], theme: Theme) {
-  return {
-    fontWeight:
-      personName.indexOf(name) === -1
-        ? theme.typography.fontWeightRegular
-        : theme.typography.fontWeightMedium,
-  };
-}
 export default function Categories() {
   const [loaded, _] = useRecoilState(firstLoadState);
   const [sessionToken, setSessionToken] = useRecoilState(sessionTokenState);
@@ -72,6 +64,16 @@ export default function Categories() {
   const [selectedCategories, setSelectedCategories] = useState<Category[]>([]);
   const [placeSchema, setPlaceSchema] = useState<string | undefined>(undefined);
   const [errors, setErrors] = useState<ValidationErrors<EventForm>>({});
+
+  const applyPlaceSchema = (newSchema: File | undefined) => {
+    if (newSchema === undefined)
+      setPlaceSchema(undefined);
+    else {
+      const reader = new FileReader();
+      reader.readAsDataURL(newSchema);
+      reader.onload = () => setPlaceSchema(reader.result as string | undefined);
+    }
+  }
 
   const apiClient = useApiClient();
   const theme = useTheme();
@@ -351,9 +353,13 @@ export default function Categories() {
                   </Grid>
                 </Grid>
                 <div style={{ marginBottom: 16 }}>
-                  <PhotoSelector
-                    image={placeSchema}
-                    setImage={setPlaceSchema}
+                  <PhotoManager
+                    title="Place schema"
+                    maxImages={1}
+                    imageSrcs={placeSchema === undefined ? [] : [placeSchema]}
+                    addImage={file => applyPlaceSchema(file)}
+                    removeByIndex={() => applyPlaceSchema(undefined)}
+                    allowedTypes={["png"]}
                   />
                 </div>
                 <Button
