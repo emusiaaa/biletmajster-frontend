@@ -59,6 +59,7 @@ export const PhotoManager = (props: PhotoManagerProps) => {
           style={{ display: "none" }}
           ref={fileInput}
           onChange={handleChange}
+          data-testid="upload-input"
         />
         <Grid
           item
@@ -67,7 +68,10 @@ export const PhotoManager = (props: PhotoManagerProps) => {
           container
           alignItems="center"
         >
-          <IconButton color="secondary" onClick={handleClick} disabled={!(props.enabled ?? true) || (props.imageSrcs?.length ?? 0) === (props.maxImages ?? -1)}>
+          <IconButton
+            color="secondary"
+            onClick={handleClick}
+            disabled={!(props.enabled ?? true) || (props.imageSrcs?.length ?? 0) === (props.maxImages ?? -1)} data-testid="add-button">
             <AddAPhoto />
           </IconButton>
 
@@ -75,7 +79,7 @@ export const PhotoManager = (props: PhotoManagerProps) => {
             {(props.title ?? "")}&nbsp;
           </Typography>
 
-          <Typography variant="caption">Max. images: {props.maxImages ?? "unlimited"}, PNG image, max. 4 MB each</Typography>
+          <Typography variant="caption">Max. images: {props.maxImages ?? "unlimited"}, allowed formats: {props.allowedTypes?.join(", " ?? "Any type")}, max. 4 MB each</Typography>
         </Grid>
         <Box
           sx={{
@@ -115,7 +119,12 @@ export const PhotoManager = (props: PhotoManagerProps) => {
                   />
                 </Grid>
                 <Grid item>
-                  <IconButton size="small" onClick={() => props.removeByIndex(index)} disabled={!(props.enabled ?? true)}>
+                  <IconButton
+                    size="small"
+                    onClick={() => props.removeByIndex(index)}
+                    disabled={!(props.enabled ?? true)}
+                    data-testid={"clear-button-" + index}
+                  >
                     <Clear />
                   </IconButton>
                 </Grid>
