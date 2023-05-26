@@ -51,7 +51,7 @@ export default function MyEvents() {
 
   const addPhoto = async (file: File) => {
     setLoading(true);
-    let formdata = new FormData();
+    const formdata = new FormData();
     formdata.append("file", file);
 
     try {
