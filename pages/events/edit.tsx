@@ -115,7 +115,7 @@ export default function Categories() {
           { headers: { sessionToken: sessionToken } }
         );
         if (response.ok) {
-          alert("Event modified!");
+          //alert("Event modified!");
           router.push("/dashboard");
         } else {
           alert("Received error: " + response.statusText);
