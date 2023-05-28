@@ -37,7 +37,7 @@ const setup = async () => {
 
   (useRecoilState as any).mockReturnValue(["mySessionToken", () => {}]);
 
-  render(<AddCategoryPopUp />);
+  render(<AddCategoryPopUp onAdd={() => Promise.resolve()} />);
   const openForm = screen.getByTestId("open-form-btn");
   await act(async () => {
     await user.click(openForm);

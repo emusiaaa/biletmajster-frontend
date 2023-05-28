@@ -394,7 +394,7 @@ export default function Categories() {
                     </FormControl>
                   </Grid>
                   <Grid item xs={2}>
-                    <AddCategoryPopUp />
+                    <AddCategoryPopUp onAdd={getCategories} />
                   </Grid>
                 </Grid>
                 <div style={{ marginBottom: 16 }}>
