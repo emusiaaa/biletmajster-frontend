@@ -31,6 +31,6 @@ jobs:
       - name: Run E2E tests
         uses: BerniWittmann/background-server-action@v1
         with:
-          command: E2E_USER=${{ secrets.E2E_USER }} E2E_PASS=${{ secrets.E2E_PASS }} ./run-selenium.sh
+          command: E2E_USER=${{ secrets.E2E_USER }} E2E_PASS=${{ secrets.E2E_PASS }} CICD=1 ./run-selenium.sh
           start: npm run dev # Run the UI in dev mode, with test headers
           wait-on: "http://localhost:3000"
