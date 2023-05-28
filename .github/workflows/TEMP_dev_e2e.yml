@@ -25,4 +25,5 @@ jobs:
         run: npm install -g typescript
       - name: Install chrome
         uses: browser-actions/setup-chrome@v1
+      - name: Check chrome version
         run: chrome --version
