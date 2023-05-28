@@ -26,6 +26,6 @@ jobs:
       - name: Install chrome
         uses: logikal-io/install-chrome@v1
         with:
-          version: 113
+          version: "113.0.5672.126-1"
       - name: Check chrome version
         run: chrome --version
