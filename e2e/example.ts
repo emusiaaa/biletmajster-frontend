@@ -1,4 +1,5 @@
 import { By, Key, Builder, WebDriver, until } from 'selenium-webdriver';
+import { createDriver } from './utils/createDriver';
 
 // CHROMEDRIVER_EXE - path to chrome driver
 // CHROME_EXE - path to chrome binary
@@ -7,23 +8,7 @@ import { By, Key, Builder, WebDriver, until } from 'selenium-webdriver';
 const test_name = "Example test";
 
 async function test_case() {
-	// config
-	const customBinary = process.env['CHROME_EXE'];
-	const isPipeline = process.env['CICD'] === '1';
-	console.log("Running " + test_name + (isPipeline ? " in pipeline" : ""));
-	const chrome = require('selenium-webdriver/chrome');
-	const builder = new Builder().forBrowser('chrome');
-	const chromeOptions = new chrome.Options();
-	chromeOptions.addArguments('--disable-gpu')
-	if (isPipeline) {
-		chromeOptions.headless();
-		chromeOptions.addArguments('window-size=1920x1080');
-	}
-	if (customBinary !== undefined) {
-		chromeOptions.setChromeBinaryPath(customBinary);
-	}
-	builder.setChromeOptions(chromeOptions);
-	const driver = await builder.build();
+	const driver = await createDriver();
 
 	// main test
 	await driver.get("https://www.duckduckgo.com");
