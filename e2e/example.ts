@@ -10,7 +10,7 @@ async function test_case() {
 	// config
 	const customBinary = process.env['CHROME_EXE'];
 	const isPipeline = process.env['CICD'] === '1';
-	console.log("Running " + test_name + isPipeline ? " in pipeline" : "");
+	console.log("Running " + test_name + (isPipeline ? " in pipeline" : ""));
 	const chrome = require('selenium-webdriver/chrome');
 	const builder = new Builder().forBrowser('chrome');
 	const chromeOptions = new chrome.Options();
