@@ -23,6 +23,7 @@ async function test_case() {
 	const searchBar = await driver.findElement(By.id("search_form_input_homepage"));
 	await searchBar.sendKeys("Selenium", Key.RETURN);
 
+	driver.close();
 	driver.quit();
 	console.log(test_name + " finished");
 	clearTimeout(timeout);

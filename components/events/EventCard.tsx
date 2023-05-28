@@ -30,6 +30,7 @@ import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import UpdateOutlinedIcon from "@mui/icons-material/UpdateOutlined";
+import { Camera } from "@mui/icons-material";
 export interface EventProps {
   event: Event;
   hideEditButtons?: boolean;
@@ -175,6 +176,15 @@ export const EventCard = (props: EventProps) => {
                   onClick={handleEdit}
                 >
                   <EditIcon style={{ color: "black" }} />
+                </IconButton>
+                <IconButton
+                  data-testid="edit-photos-button"
+                  aria-label="Edit event photos"
+                  onClick={() =>
+                    router.push("/events/photos?id=" + props.event.id)
+                  }
+                >
+                  <Camera style={{ color: "black" }} />
                 </IconButton>
               </CardActions>
             )
