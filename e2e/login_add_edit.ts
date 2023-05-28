@@ -33,11 +33,13 @@ async function test_case() {
 	await driver.findElement(By.id("password")).sendKeys(pass, Key.ENTER);
 
 	// Go to Add Event
+	console.log("Going to Add Event...");
 	await driver.wait(until.urlIs("http://localhost:3000/dashboard"));
 	await driver.wait(until.elementIsVisible(await driver.findElement(By.xpath("//button[contains(., 'Add new event')]"))), 10000);
 	await driver.findElement(By.xpath("//button[contains(., 'Add new event')]")).click();
 
 	// Create a sample event - will redirect to My Events
+	console.log("Adding Event...");
 	await driver.wait(until.urlIs("http://localhost:3000/events/add"));
 	const eventName = "seleniumEvent" + String(Math.floor(Math.random() * 1000000));
 	await forMs(1000);
@@ -50,7 +52,9 @@ async function test_case() {
 	await driver.findElement(By.xpath("//div[contains(., 'Lat')]/input")).sendKeys("52", Key.TAB, "21");
 	// description
 	await driver.findElement(By.xpath("//div[contains(., 'Short description of event')]/textarea")).sendKeys("Selenium");
+	await driver.findElement(By.xpath("//div[contains(., 'Short description of event')]/textarea")).click();
 	// start and end date
+	await forMs(200);
 	await driver.actions().sendKeys(Key.TAB).perform();
 	await forMs(70);
 	await driver.actions().sendKeys(Key.TAB).perform();
@@ -71,6 +75,8 @@ async function test_case() {
 	await forMs(70);
 	await driver.actions().sendKeys(Key.ENTER).perform();
 	await forMs(70);
+	await driver.actions().sendKeys(Key.ESCAPE).perform();
+	await driver.actions().sendKeys(Key.ESCAPE).perform();
 	// dropdown (add category)
 	await driver.findElement(By.xpath("//*[@data-testid='select']")).click();
 	await driver.actions().sendKeys(Key.ARROW_DOWN).perform();
@@ -81,26 +87,41 @@ async function test_case() {
 
 
 	// Wait until event card is present, then click Edit on the event.
+	console.log("Opening Edit Event form...");
+	console.log("url is " + await driver.getCurrentUrl())
+	let imaggggggggggg = (await driver.takeScreenshot());
+	var base64Data = imaggggggggggg.replace(/^data:image\/png;base64,/, "");
+
+	require("fs").writeFile("out.png", base64Data, 'base64', (err: any) => {
+		console.log(err);
+	});
 	await driver.wait(until.urlIs("http://localhost:3000/events/my"));
-	await forMs(1000);
+	console.log("1...");
+	await forMs(2000);
+	console.log("2...");
 	await driver.wait(until.elementIsVisible(await driver.findElement(By.xpath('//div[contains(., "' + eventName + '")]'))), 5000);
-	await forMs(70);
+	console.log("3...");
+	await forMs(1000);
 	await driver.findElement(By.xpath('//div[contains(@class, "MuiCard") and contains(., "' + eventName + '")]//button[@data-testid="edit-event-button"]')).click();
+	console.log("4...");
 
 	// Change title of the event - will redirect to dashboard
+	console.log("Editing Event...");
 	await driver.wait(until.urlContains("http://localhost:3000/events/edit"));
 	const newEventName = eventName + "edited";
 	// await driver.wait(until.elementTextIs(await driver.findElement(By.xpath("//div[contains(., 'Nazwa eventu')]/input")), eventName)); // wait until it loads
-	await forMs(3000);
+	await forMs(10000);
 	await driver.findElement(By.xpath("//div[contains(., 'Nazwa eventu')]/input")).click();
 	await driver.findElement(By.xpath("//div[contains(., 'Nazwa eventu')]/input")).sendKeys("edited");
 	await driver.findElement(By.xpath("//button[@type='submit']")).click();
 
 	// Go to My Events
+	console.log("Redirecting...");
 	await driver.wait(until.urlIs('http://localhost:3000/dashboard'));
 	await driver.findElement(By.xpath("//button[contains(., 'My events')]")).click();
 
 	// Check if the card with the new name is present
+	console.log("Finding edited event...");
 	await driver.wait(until.urlIs("http://localhost:3000/events/my"));
 	await forMs(2000);
 	await driver.wait(until.elementIsVisible(await driver.findElement(By.xpath('//*[contains(., "' + newEventName + '")]'))), 10000);
