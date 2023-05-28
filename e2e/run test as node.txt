@@ -1,0 +1,5 @@
+How to run e2e test from main dir:
+
+cd e2e
+tsc testname.ts
+node testname.js

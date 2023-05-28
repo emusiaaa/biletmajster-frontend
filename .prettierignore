@@ -311,3 +311,4 @@ api
 
 .vscode/launch.json
 .idea/*
+e2e/

@@ -1,0 +1,28 @@
+name: E2E tests - Selenium + Chrome
+
+on:
+  pull_request:
+    branches:
+      - dev # TODO: Change to main
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: true
+      - name: Install Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: "18"
+      - name: Install modules
+        run: npm install
+      - name: Install tsc
+        run: npm install -g typescript
+      - name: Install chrome
+        uses: browser-actions/setup-chrome@v1
+        run: chrome --version
