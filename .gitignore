@@ -313,3 +313,4 @@ $RECYCLE.BIN/
 .idea/*
 pages/testpage.tsx
 *-local.sh
+chromedriver113
