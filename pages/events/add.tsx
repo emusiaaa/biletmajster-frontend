@@ -123,6 +123,7 @@ export default function Categories() {
     }
   };
   const getCategories = async () => {
+    console.log("update:)")
     const response = await apiClient.categories.getCategories();
     if (response.ok) {
       const categoriesFromResponse: Category[] = response.data.map(
@@ -350,7 +351,7 @@ export default function Categories() {
                     </FormControl>
                   </Grid>
                   <Grid item xs={2}>
-                    <AddCategoryPopUp />
+                    <AddCategoryPopUp onAdd={getCategories}/>
                   </Grid>
                 </Grid>
                 <div style={{ marginBottom: 16 }}>
