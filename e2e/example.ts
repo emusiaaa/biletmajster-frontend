@@ -34,8 +34,11 @@ async function test_case() {
 
 	setTimeout(function () {
 		driver.quit();
-		console.log(test_name + " finished");
+		throw ("Timeout");
 	}, 10000);
+
+	driver.quit();
+	console.log(test_name + " finished");
 }
 test_case();
 
