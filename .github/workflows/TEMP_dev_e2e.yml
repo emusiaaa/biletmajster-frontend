@@ -24,6 +24,8 @@ jobs:
       - name: Install tsc
         run: npm install -g typescript
       - name: Install chrome
-        uses: browser-actions/setup-chrome@v1
+        uses: logikal-io/install-chrome@v1
+        with:
+          version: 113
       - name: Check chrome version
         run: chrome --version
