@@ -2,3 +2,4 @@ node_modules
 .next
 __tests__
 jest.config.js
+e2e/
