@@ -11,7 +11,11 @@ import { useRecoilState } from "recoil";
 import { sessionTokenState } from "../../recoil/sessionTokenState";
 import { useApiClient } from "../../functions/useApiClient";
 
-export default function AddCategoryPopUp() {
+type CatProps = {
+  onAdd: () => Promise<void>;
+};
+
+export default function AddCategoryPopUp(props: CatProps) {
   const [open, setOpen] = React.useState(false);
   const [error, setError] = React.useState("");
   const [sessionToken, setSessionToken] = useRecoilState(sessionTokenState);
@@ -40,6 +44,7 @@ export default function AddCategoryPopUp() {
       if (response.ok) {
         console.log("juhuu");
         console.log(response.data);
+        props.onAdd();
         handleClose();
       } else {
         if (response.status === 400) {
