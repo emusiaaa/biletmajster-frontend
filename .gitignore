@@ -314,3 +314,4 @@ $RECYCLE.BIN/
 pages/testpage.tsx
 *-local.sh
 chromedriver113
+e2e/*.js
