@@ -28,17 +28,19 @@ async function test_case() {
 	// main test
 	await driver.get("https://www.duckduckgo.com");
 
-	await driver.wait(until.elementIsVisible(await driver.findElement(By.id("search_form_input_homepage"))) /* here: optional timeout? */);
-	const searchBar = await driver.findElement(By.id("search_form_input_homepage"));
-	searchBar.sendKeys("Selenium", Key.RETURN);
-
-	setTimeout(function () {
+	// test timeout
+	const timeout = setTimeout(function () {
 		driver.quit();
 		throw ("Timeout");
 	}, 10000);
 
+	await driver.wait(until.elementIsVisible(await driver.findElement(By.id("search_form_input_homepage"))) /* here: optional timeout? */);
+	const searchBar = await driver.findElement(By.id("search_form_input_homepage"));
+	await searchBar.sendKeys("Selenium", Key.RETURN);
+
 	driver.quit();
 	console.log(test_name + " finished");
+	clearTimeout(timeout);
 }
 test_case();
 
