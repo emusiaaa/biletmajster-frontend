@@ -212,6 +212,7 @@ export default function Categories() {
                         <Grid item xs={12}>
                           <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DateTimePicker
+                              data-testid="startTime-picker"
                               label="Event start time"
                               value={beginDate}
                               minDate={dayjs()}

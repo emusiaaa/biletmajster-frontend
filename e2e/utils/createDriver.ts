@@ -14,7 +14,8 @@ export async function createDriver() {
   chromeOptions.addArguments('--disable-gpu')
   if (isPipeline) {
     chromeOptions.headless();
-    chromeOptions.addArguments('window-size=1920x1080');
+    chromeOptions.addArguments('--window-size=1280x720');
+    chromeOptions.addArguments("start-maximized");
   }
   if (customBinary !== undefined) {
     chromeOptions.setChromeBinaryPath(customBinary);

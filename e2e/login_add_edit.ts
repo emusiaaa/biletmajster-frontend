@@ -55,22 +55,13 @@ async function test_case() {
 	await driver.findElement(By.xpath("//div[contains(., 'Short description of event')]/textarea")).click();
 	// start and end date
 	await forMs(200);
-	await driver.actions().sendKeys(Key.TAB).perform();
-	await forMs(70);
-	await driver.actions().sendKeys(Key.TAB).perform();
-	await forMs(70);
+	const buttons = await driver.findElements(By.css("[aria-label='Choose date']"));
+	buttons[0].click();
 	await driver.actions().sendKeys(Key.ENTER).perform();
 	await forMs(70);
-	await driver.actions().sendKeys(Key.ENTER).perform();
+	await driver.actions().sendKeys(Key.ESCAPE).perform();
 	await forMs(70);
-	await driver.actions().sendKeys(Key.TAB).perform();
-	await forMs(70);
-	await driver.actions().sendKeys(Key.TAB).perform();
-	await forMs(70);
-	await driver.actions().sendKeys(Key.TAB).perform();
-	await forMs(70);
-	await driver.actions().sendKeys(Key.ENTER).perform();
-	await forMs(70);
+	buttons[1].click();
 	await driver.actions().sendKeys(Key.ARROW_RIGHT).perform();
 	await forMs(70);
 	await driver.actions().sendKeys(Key.ENTER).perform();
@@ -88,13 +79,6 @@ async function test_case() {
 
 	// Wait until event card is present, then click Edit on the event.
 	console.log("Opening Edit Event form...");
-	console.log("url is " + await driver.getCurrentUrl())
-	let imaggggggggggg = (await driver.takeScreenshot());
-	var base64Data = imaggggggggggg.replace(/^data:image\/png;base64,/, "");
-
-	require("fs").writeFile("out.png", base64Data, 'base64', (err: any) => {
-		console.log(err);
-	});
 	await driver.wait(until.urlIs("http://localhost:3000/events/my"));
 	console.log("1...");
 	await forMs(2000);
