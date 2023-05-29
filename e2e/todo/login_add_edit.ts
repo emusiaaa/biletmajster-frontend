@@ -1,6 +1,6 @@
 import { By, Key, Builder, WebDriver, until } from 'selenium-webdriver';
-import { createDriver } from './utils/createDriver';
-import { forMs } from './utils/forMs';
+import { createDriver } from '../utils/createDriver';
+import { forMs } from '../utils/forMs';
 
 // CHROMEDRIVER_EXE - path to chrome driver
 // CHROME_EXE - path to chrome binary
