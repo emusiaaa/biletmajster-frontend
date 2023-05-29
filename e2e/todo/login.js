@@ -19,8 +19,6 @@ async function test_case() {
 
 	await forMs(5000);
 
-
-
 	await driver.quit();
 }
 

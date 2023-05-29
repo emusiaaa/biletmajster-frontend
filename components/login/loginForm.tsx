@@ -134,6 +134,7 @@ export default function SignIn() {
           <Button
             data-testid="login"
             type="submit"
+            id="login"
             fullWidth
             variant="contained"
             sx={{ mb: 2 }}
