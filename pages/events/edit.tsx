@@ -401,7 +401,7 @@ export default function Categories() {
                   <PhotoManager
                     title="Place schema"
                     maxImages={1}
-                    imageSrcs={placeSchema === undefined ? [] : [placeSchema]}
+                    imageSrcs={placeSchema === undefined || placeSchema === "" ? [] : [placeSchema]}
                     addImage={(file) => applyPlaceSchema(file)}
                     removeByIndex={() => applyPlaceSchema(undefined)}
                     allowedTypes={["png"]}

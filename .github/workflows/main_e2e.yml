@@ -28,4 +28,8 @@ jobs:
       - name: Check chrome version
         run: chrome --version
       - name: Run E2E tests
-        run: CICD=1 ./run-selenium.sh
+        uses: BerniWittmann/background-server-action@v1
+        with:
+          command: E2E_USER=${{ secrets.E2E_USER }} E2E_PASS=${{ secrets.E2E_PASS }} CICD=1 ./run-selenium.sh
+          start: npm run dev &>/dev/null # Run the UI in dev mode, with test headers
+          wait-on: "http://localhost:3000"
