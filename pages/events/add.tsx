@@ -36,7 +36,8 @@ import { EventValidator } from "../../validators/EventValidator";
 import { useApiClient } from "../../functions/useApiClient";
 import { Map } from "@/components/Map";
 import { firstLoadState } from "../../recoil/firstLoadState";
-import { PhotoSelector } from "@/components/PhotoSelector";
+import { PhotoManager } from "@/components/PhotoManager";
+import { useRouter } from "next/router";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -49,14 +50,6 @@ const MenuProps = {
   },
 };
 
-function getStyles(name: string, personName: readonly string[], theme: Theme) {
-  return {
-    fontWeight:
-      personName.indexOf(name) === -1
-        ? theme.typography.fontWeightRegular
-        : theme.typography.fontWeightMedium,
-  };
-}
 export default function Categories() {
   const [loaded, _] = useRecoilState(firstLoadState);
   const [sessionToken, setSessionToken] = useRecoilState(sessionTokenState);
@@ -72,6 +65,15 @@ export default function Categories() {
   const [selectedCategories, setSelectedCategories] = useState<Category[]>([]);
   const [placeSchema, setPlaceSchema] = useState<string | undefined>(undefined);
   const [errors, setErrors] = useState<ValidationErrors<EventForm>>({});
+  const router = useRouter();
+  const applyPlaceSchema = (newSchema: File | undefined) => {
+    if (newSchema === undefined) setPlaceSchema(undefined);
+    else {
+      const reader = new FileReader();
+      reader.readAsDataURL(newSchema);
+      reader.onload = () => setPlaceSchema(reader.result as string | undefined);
+    }
+  };
 
   const apiClient = useApiClient();
   const theme = useTheme();
@@ -109,8 +111,9 @@ export default function Categories() {
           headers: { sessionToken: sessionToken },
         });
         if (response.ok) {
-          console.log(response);
-          alert("Created! Event id: " + response.data.id);
+          router.push("/events/my");
+          //alert("Created! Event id: " + response.data.id);
+
         } else {
           alert("Received error: " + response.statusText);
         }
@@ -120,6 +123,7 @@ export default function Categories() {
     }
   };
   const getCategories = async () => {
+    console.log("update:)")
     const response = await apiClient.categories.getCategories();
     if (response.ok) {
       const categoriesFromResponse: Category[] = response.data.map(
@@ -208,6 +212,7 @@ export default function Categories() {
                         <Grid item xs={12}>
                           <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DateTimePicker
+                              data-testid="startTime-picker"
                               label="Event start time"
                               value={beginDate}
                               minDate={dayjs()}
@@ -347,13 +352,17 @@ export default function Categories() {
                     </FormControl>
                   </Grid>
                   <Grid item xs={2}>
-                    <AddCategoryPopUp />
+                    <AddCategoryPopUp onAdd={getCategories}/>
                   </Grid>
                 </Grid>
                 <div style={{ marginBottom: 16 }}>
-                  <PhotoSelector
-                    image={placeSchema}
-                    setImage={setPlaceSchema}
+                  <PhotoManager
+                    title="Place schema"
+                    maxImages={1}
+                    imageSrcs={placeSchema === undefined ? [] : [placeSchema]}
+                    addImage={(file) => applyPlaceSchema(file)}
+                    removeByIndex={() => applyPlaceSchema(undefined)}
+                    allowedTypes={["png"]}
                   />
                 </div>
                 <Button
