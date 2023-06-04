@@ -11,7 +11,9 @@ export async function createDriver() {
   const chrome = require('selenium-webdriver/chrome');
   const builder = new Builder().forBrowser('chrome');
   const chromeOptions = new chrome.Options();
-  chromeOptions.addArguments('--disable-gpu')
+  chromeOptions.addArguments('--disable-gpu');
+  chromeOptions.addArguments('--allow-running-insecure-content');
+  chromeOptions.addArguments('--disable-extensions');
   if (isPipeline) {
     chromeOptions.headless();
     chromeOptions.addArguments('--window-size=1280x720');
