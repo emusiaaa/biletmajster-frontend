@@ -157,7 +157,6 @@ export const EventCard = (props: EventProps) => {
             setPhotos(response.data);
             setLoading(false);
         }
-        ;
     }
     const handleExpandClick = () => {
         setExpanded(!expanded);
