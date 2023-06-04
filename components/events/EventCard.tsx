@@ -124,7 +124,7 @@ export const EventCard = (props: EventProps) => {
         hour12: false, // Use 24-hour clock format
     };
     const formattedStartTime = startTime.toLocaleDateString("en-US", options);
-    const formattedEndTime = startTime.toLocaleDateString("en-US", options);
+    const formattedEndTime = endTime.toLocaleDateString("en-US", options);
 
     const handleEdit = () => {
         router.push("/events/edit?id=" + props.event.id);
