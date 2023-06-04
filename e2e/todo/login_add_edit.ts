@@ -1,3 +1,4 @@
+import { swapBackendOnLoginPage } from '../utils/swapBackendOnLoginPage';
 import { By, Key, Builder, WebDriver, until } from 'selenium-webdriver';
 import { createDriver } from '../utils/createDriver';
 import { forMs } from '../utils/forMs';
@@ -12,6 +13,7 @@ async function test_case() {
 	const driver = await createDriver();
 	const user = process.env.E2E_USER;
 	const pass = process.env.E2E_PASS;
+	const backend = process.env.BACKEND;
 	if (user === undefined || pass === undefined)
 		throw ("Username or password undefined.");
 
@@ -29,6 +31,8 @@ async function test_case() {
 
 	// wait for login form, then log in
 	await driver.wait(until.elementIsVisible(await driver.findElement(By.xpath("//button[contains(., 'Log in')]"))));
+	if (backend !== undefined)
+		await swapBackendOnLoginPage(driver, backend);
 	await driver.findElement(By.id("email")).sendKeys(user);
 	await driver.findElement(By.id("password")).sendKeys(pass, Key.ENTER);
 
@@ -57,11 +61,15 @@ async function test_case() {
 	await forMs(200);
 	const buttons = await driver.findElements(By.css("[aria-label='Choose date']"));
 	buttons[0].click();
+	await driver.actions().sendKeys(Key.ARROW_RIGHT).perform();
+	await forMs(70);
 	await driver.actions().sendKeys(Key.ENTER).perform();
 	await forMs(70);
 	await driver.actions().sendKeys(Key.ESCAPE).perform();
 	await forMs(70);
 	buttons[1].click();
+	await driver.actions().sendKeys(Key.ARROW_RIGHT).perform();
+	await forMs(70);
 	await driver.actions().sendKeys(Key.ARROW_RIGHT).perform();
 	await forMs(70);
 	await driver.actions().sendKeys(Key.ENTER).perform();
