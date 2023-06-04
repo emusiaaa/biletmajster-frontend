@@ -15,7 +15,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import moment from "moment";
 import {Event, EventStatus} from "../../api/Api";
-import {Box, Typography, Grid, Chip} from "@mui/material";
+import {Box, Typography, Grid, Chip, CircularProgress} from "@mui/material";
 import {useState} from "react";
 import {Map} from "@/components/Map";
 import EditIcon from "@mui/icons-material/Edit";
@@ -147,7 +147,8 @@ export const EventCard = (props: EventProps) => {
         }
     };
     const downloadAll = async () => {
-        if (photos.length === 0) {
+        if (photos.length === 0 && loading) {
+            console.log("pobieram");
             const response = await apiClient.events.getPhoto(Number(props.event.id));
             if (!response.ok) {
                 router.push("/dashboard");
@@ -283,7 +284,8 @@ export const EventCard = (props: EventProps) => {
                                 gap: 1,
                             }}
                         >
-                            {loading ? "loaginf" : photos.map((imgSrc, index) => (
+                            {loading ? <CircularProgress /> :
+                                photos.length === 0 ? "No photos found...." : photos.map((imgSrc, index) => (
                                 <Box
                                     key={imgSrc}
                                     sx={{
