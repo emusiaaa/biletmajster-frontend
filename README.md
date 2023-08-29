@@ -2,6 +2,7 @@
 
 This website is an academic project that allows events creators to create an account, add and modify events (with details such as venue coordinates, categories and max places).
 When an event is created, participants (on an app) can view events and make reservations.
+The website works neaded to work with 3 diffrent APIs, 2 of them created by other teams.
 
 # Technology
 - React.ts
