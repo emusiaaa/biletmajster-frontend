@@ -5,10 +5,11 @@ When an event is created, participants (on an app) can view events and make rese
 The website works neaded to work with 3 diffrent APIs, 2 of them created by other teams.
 
 # Technology
-- React.ts
+- TypeScript
+- React
 - Next.js
-- Recoil
 - MUI
+- Recoil
 - Jest.ts
 
 # Some features
